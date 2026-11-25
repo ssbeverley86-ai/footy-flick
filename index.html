@@ -1,1370 +1,185 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>Footy Flick V0.13 · Behind The Goals</title><style>[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:#0b151c;color:#fff;font:14px system-ui}main{max-width:480px;margin:auto;padding:10px}header,nav{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:7px 0}h1{font-size:21px;letter-spacing:2px;margin:0}small{color:#a7bbc6}button{flex:1;padding:10px 4px;border:1px solid #405563;border-radius:8px;background:#192c38;color:white;font:inherit}button.on{background:#d7f47b;color:#14251b;font-weight:bold}button:disabled{opacity:.3}#stage{position:relative;height:min(62vh,570px);min-height:330px;overflow:hidden;border-radius:12px;background:#375d43;touch-action:none}canvas{display:block;width:100%;height:100%;touch-action:none}#hud{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;pointer-events:none}#hud span{background:#10202cdd;padding:8px;border-radius:6px;font-weight:bold}#result{min-height:34px;padding:8px;text-align:center;font-weight:bold}#guide{position:absolute;bottom:8px;width:100%;text-align:center;pointer-events:none;text-shadow:0 1px 3px black}#err{color:#ffb99b}body{background:radial-gradient(ellipse at top,#233c4b,#081118 65%);font-family:system-ui,sans-serif}main{max-width:540px;padding:10px 12px}header{padding:7px 2px 10px;border-bottom:1px solid #ffffff20}h1{font-size:26px;font-style:italic;letter-spacing:-.8px;font-weight:950}header small{font-size:10px;letter-spacing:2px;color:#a5c7d4}#score{font-size:25px;font-variant-numeric:tabular-nums;color:#e5ff93}button{border-radius:5px;background:linear-gradient(#233d4d,#132632);border-color:#47616e;font-weight:650;font-size:12px;min-height:39px}button.on{background:linear-gradient(#e6ff9c,#a9d84c);box-shadow:0 2px 12px #b4f65a30}#stage{height:min(65vh,650px);border:1px solid #577078;border-radius:8px;box-shadow:0 12px 30px #0008}#hud span{border-radius:3px;background:linear-gradient(110deg,#101f2cf5,#284355ed);border-left:3px solid #c9f16c;font-size:12px;letter-spacing:.3px}#guide{bottom:15px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:800}#result{background:#172a35;border-bottom:2px solid #527064;margin-top:7px;font-size:13px}nav{margin:6px 0}#challenge{position:absolute;top:54px;left:12%;right:12%;text-align:center;padding:9px;background:#182c3aee;border:1px solid #d4f57a;border-radius:5px;font-weight:900;letter-spacing:1px;pointer-events:none}#challenge.ground{background:#a83d15;animation:flash 1s ease-in-out 4}@keyframes flash{50%{background:#f2b42c;color:#18202a}}#bonus{position:absolute;top:32%;left:10%;right:10%;text-align:center;font-size:28px;font-weight:1000;color:#f6ff9e;text-shadow:0 3px 8px #000;animation:flash 1s 2;pointer-events:none}#teach{background:#142b39;border:1px solid #9acb61;padding:15px;margin-top:8px;border-radius:8px;line-height:1.5}#powerHint{position:absolute;bottom:40px;left:10%;right:10%;text-align:center;background:#122532dd;padding:6px;border-radius:4px;pointer-events:none;font-size:11px}#clubPanel{background:linear-gradient(145deg,#1b3343,#101e29);border:1px solid #58727a;border-radius:7px;padding:10px;margin:7px 0}#clubPanel label{font-size:10px;letter-spacing:1px;font-weight:800;color:#c4d9e4;display:flex;flex-direction:column;gap:4px}#clubPanel input,#clubPanel select{background:#0d202b;color:white;border:1px solid #607b88;border-radius:4px;padding:5px;min-width:0}#clubPanel input[type=color]{height:30px;width:54px;padding:2px}#clubPanel input[type=file]{max-width:155px;font-size:10px}#clubPanel .clubTop,#clubPanel .clubBottom{display:flex;align-items:end;gap:8px;flex-wrap:wrap;justify-content:space-between}#clubPanel .clubTop label:first-child{flex:1}#clubPanel .clubBottom{margin-top:8px}#clubPanel .clubBottom button{max-width:140px}#clubPreview{font-weight:900;letter-spacing:1px;color:#e5ff93}#recordBoard{text-align:center;padding:6px;color:#cde7c6;font-size:11px;letter-spacing:1px}#stage:after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 50px #061a2455}#score{white-space:nowrap}#teach{max-height:48vh;overflow:auto}#result{min-height:40px} 
-/* V0.11 match-day polish */
-:root{--lime:#c8f66d;--panel:#122735;--edge:#5b7785}body{background:radial-gradient(ellipse at 50% 0%,#345564 0%,#0b141d 65%);background-attachment:fixed}h1{text-shadow:0 1px 0 #7c969b;letter-spacing:-1.5px}nav{gap:5px}nav button{font-size:11px;min-width:0;white-space:nowrap}button:active{transform:translateY(1px)}button{transition:background .17s,border-color .17s}#weatherPanel{border-top:1px solid #456579;border-bottom:1px solid #456579;padding:6px 0;margin:4px 0}#seasonPanel{padding:12px;background:#102833;border:1px solid #63817b;border-radius:7px}#seasonPanel textarea{width:100%;background:#091b26;color:white;border:1px solid #5e7b84;border-radius:5px;font:13px system-ui;padding:8px}#seasonInfo{margin:8px 0;font-size:12px;line-height:1.5;color:#cde9d3}#seasonLadder{font-size:11px;overflow-x:auto}#seasonLadder table{width:100%;border-collapse:collapse}#seasonLadder td,#seasonLadder th{border-bottom:1px solid #42606b;padding:5px 3px;text-align:left}.toolbar{display:flex;align-items:end;gap:7px;flex-wrap:wrap}.toolbar label{display:flex;flex-direction:column;gap:2px;font-size:10px;letter-spacing:.7px;color:#b8d4dc;font-weight:800;flex:1;min-width:105px}.toolbar select{width:100%;border:1px solid #597481;border-radius:4px;background:#152e3d;color:white;padding:7px;font-size:12px}.toolbar button{flex:1;min-width:108px}.muted{color:#acc1cb}.tiny{font-size:11px;line-height:1.35}.sectionTitle{font-size:13px;letter-spacing:1px;color:var(--lime);font-weight:900}#logoHint{margin:5px 0 0}#clubPanel .clubTop{align-items:end}#clubPanel label:first-child{min-width:130px}#clubPanel input[type=file]{font-size:10px;max-width:140px}#stage{height:min(64vh,650px);background:#304939;isolation:isolate;box-shadow:0 12px 55px #000a}#weatherFX{position:absolute;inset:0;pointer-events:none;z-index:2}#weatherFX.rain{background:repeating-linear-gradient(105deg,transparent 0 27px,#d7edff36 28px,#d7edff05 30px,transparent 36px);background-size:240px 220px;animation:rainFall .45s linear infinite;opacity:.7}@keyframes rainFall{to{background-position:-70px 170px}}#grassCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}#sunSpot{position:absolute;top:12%;right:17%;z-index:5;background:radial-gradient(circle,#ffffe1 0%,#fff49e 21%,#fadd7c88 37%,#fff4a500 72%);box-shadow:0 0 55px 35px #ffe7a866;border-radius:50%;height:72px;width:72px;display:flex;align-items:center;justify-content:center;font-size:31px;color:#fffaad;text-shadow:0 0 16px yellow;touch-action:none;user-select:none}#sunSpot[hidden]{display:none}#sunSpot.shaded{box-shadow:0 0 13px #ffa6;background:#32454acc;opacity:.45}#stage:has(#sunSpot:not([hidden])):not(:has(#sunSpot.shaded)) canvas:first-of-type{filter:brightness(1.1)}#wipePanel{position:absolute;inset:20% 12%;z-index:20;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:9px;padding:12px;background:#143345eF;border:2px solid #c0f27a;border-radius:15px;touch-action:none}#wipePanel[hidden]{display:none}#wipePanel>b{font-size:20px;color:#e5ff92}#wipePanel strong{font-size:33px;color:#f4ff9d}#wetFooty{font-size:100px;text-shadow:0 0 35px #77d6ff;transition:filter .15s}#wipePanel small{color:#d4eeef}#conditionTip{position:absolute;top:94px;left:8%;right:8%;z-index:4;text-align:center;background:#122b38dD;border:1px solid #a6c9d1;border-radius:7px;padding:8px;font-size:12px;font-weight:800;pointer-events:none}#conditionTip[hidden]{display:none}#guide{z-index:3;font-size:12px}#challenge{z-index:4}#hud{z-index:4}#powerHint{z-index:4}#recordBoard{font-size:12px;color:#c8edc7;text-align:center;line-height:1.5;padding:5px}#legal{margin:10px 0;color:#b1cbd1;font-size:10px;line-height:1.4}#legal a{color:#c7eb9b}#legal summary{cursor:pointer;font-size:11px}#teach p{margin:8px 0}#stage canvas:not(#grassCanvas){z-index:0}.toolbar select:focus,.toolbar button:focus{outline:2px solid #d1f68e}
-#legal{border-top:1px solid #385463;padding-top:9px}.logoRightsRow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;color:#d7eacb;margin:8px 0 2px}.logoRightsRow label{display:flex!important;flex-direction:row!important;align-items:center;gap:6px;flex:1;min-width:205px;font-size:11px!important;letter-spacing:0!important}.logoRightsRow input{width:17px;height:17px}.logoRightsRow button{flex:0 0 auto;min-height:30px;font-size:10px;padding:5px 8px}#catchPrompt{position:absolute;left:6%;right:6%;bottom:21%;z-index:17;pointer-events:none;text-align:center;padding:13px 14px;color:#182614;background:#d9fb89ea;border:2px solid #fffcd0;border-radius:11px;box-shadow:0 4px 22px #000a;font-size:15px;font-weight:950;letter-spacing:.5px;animation:catchPulse 1s ease-in-out infinite alternate}#catchPrompt[hidden]{display:none}@keyframes catchPulse{to{transform:scale(1.025);background:#f5ffb8}}
-</style><style id="immersiveStyles">
-html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}main{width:100%;height:100dvh;max-width:none;padding:0;margin:0;display:block;background:#06141e}
-#stage{width:100vw;height:100dvh;min-height:0;max-height:none;position:fixed;inset:0;border:0;border-radius:0;box-shadow:none;overflow:hidden}
-#stage canvas:not(#grassCanvas){position:absolute;inset:0;z-index:0}#grassCanvas{position:absolute;inset:0;z-index:9}
-#scoreDock{position:absolute;top:calc(env(safe-area-inset-top,0px) + 9px);left:50%;transform:translateX(-50%);z-index:13;background:#0d2536d9;border:1px solid #86aeb5;border-radius:14px;padding:8px 13px;pointer-events:none;box-shadow:0 4px 18px #0009}
-#scoreDock #score{font-size:19px;color:#e6ff9b}
-#menuButton{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:14;min-width:58px;max-width:70px;font-size:13px;background:#102634e8;border:1px solid #9cbaad;border-radius:10px}
-#brandMini{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);left:11px;font-size:12px;font-style:italic;font-weight:1000;color:#e3fca2;text-shadow:0 2px 4px #0c1319;z-index:13;pointer-events:none}
-#hud{top:calc(env(safe-area-inset-top,0px) + 58px);right:10px;left:10px}#hud span{font-size:10px;max-width:48%}
-#quickActions{position:absolute;right:8px;top:36%;z-index:12;width:min(108px,26vw);display:flex;flex-direction:column;gap:8px;pointer-events:auto}
-#quickActions button{min-height:46px;border-radius:12px;background:#102e3fe8;border:1px solid #a6c4c8;box-shadow:0 4px 14px #0008;font-size:11px;padding:8px 3px;white-space:normal}
-#quickActions button:disabled{display:none}#next{display:none!important;background:#e2fc9d!important;color:#162a27!important}#next.show{display:block!important}
-#scoreMessage{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);left:10px;right:10px;z-index:11;text-align:center;font-size:12px;padding:8px 12px;border:1px solid #547a78;border-radius:12px;background:#102638d6;pointer-events:none;min-height:0}
-#guide{bottom:calc(env(safe-area-inset-bottom,0px) + 50px)}#powerHint{bottom:calc(env(safe-area-inset-bottom,0px) + 85px);left:8%;right:8%}
-#challenge{top:calc(env(safe-area-inset-top,0px) + 94px)}#conditionTip{top:calc(env(safe-area-inset-top,0px) + 140px);left:5%;right:5%;font-size:10px}
-#grassPatch{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 76px);left:10px;width:124px;height:92px;display:flex;align-items:center;justify-content:flex-end;flex-direction:column;padding:6px 4px;border-radius:20px 20px 9px 9px;background:linear-gradient(0deg,#224a28e8,#286a2b44 70%,transparent);z-index:14;touch-action:none;user-select:none;border-bottom:2px solid #b8ef7c}
-#grassPatch span{font-size:34px;line-height:1.2;filter:drop-shadow(0 3px 2px #000b)}#grassPatch small{font-size:8px;font-weight:900;letter-spacing:.3px;color:#d8ffb0}
-#grassPatch.holding,#grassPatch.pulse{outline:2px solid #e6ff91;box-shadow:0 0 28px #d5fd8b77}
-#settingsDrawer{position:fixed;inset:0;z-index:60;background:#071925f5;overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top,0px) + 58px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);display:none}
-body.menu-open #settingsDrawer{display:block}#settingsDrawer>*,#settingsDrawer section{max-width:540px;margin:8px auto}#settingsDrawer header{display:flex;position:static;justify-content:space-between;padding-bottom:9px}#settingsDrawer nav{display:flex;position:static;flex-wrap:wrap}#settingsDrawer #clubPanel{padding:12px}#settingsDrawer #weatherPanel{display:flex;gap:7px}#settingsDrawer #seasonPanel{max-height:none}
-#closeMenu{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:70;min-width:110px;max-width:125px;background:#e3ff9a;color:#142c20;border-radius:10px;font-weight:900;display:none}body.menu-open #closeMenu{display:block}
-#wipePanel{position:fixed;inset:0;z-index:120;background:radial-gradient(ellipse at center,#1b4554,#071824 72%);display:flex;flex-direction:column;align-items:center;justify-content:center;border:none;border-radius:0;padding:calc(env(safe-area-inset-top,0px) + 15px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);touch-action:none}
-#wipePanel>b{font-size:24px;letter-spacing:1px}#wetFooty{width:min(90vw,450px)!important;height:auto!important;max-height:48vh;position:static!important;display:block;touch-action:none;pointer-events:auto;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:20px;background:#20344250}
-#wipeMeter{font-size:15px!important;color:#effce9!important}#wipeCount{font-size:42px!important}#wipePanel[hidden]{display:none!important}
-#teach{max-height:none!important}#settingsDrawer #recordBoard{padding:8px}#settingsDrawer #legal{margin-top:22px}
-@media (orientation:landscape) {#grassPatch{width:88px;height:74px}#grassPatch span{font-size:22px}#quickActions{top:42%}}
-</style><style id="cinematicStyle">
-#stage{background:radial-gradient(ellipse at 35% 20%,#f4c58f,#667c8f 44%,#263e4e)}
-#stage:after{box-shadow:inset 0 0 68px #02121e88}
-#brandMini{font-size:14px!important;letter-spacing:-.5px;color:#f9e2a8!important;text-shadow:0 2px 6px #031017}
-#scoreDock{padding:9px 18px;background:linear-gradient(130deg,#061725e8,#20303ce0)!important;border:1px solid #dfd6bc!important;box-shadow:0 4px 20px #0009}
-#hud span{border:1px solid #b5c1bd55;border-left:3px solid #efd68f;background:#081827dc;box-shadow:0 3px 10px #0008}
-#scoreMessage{border:1px solid #b4bcb778;background:linear-gradient(90deg,#091c2fe8,#243343e5,#0a1c2ee8);box-shadow:0 4px 20px #061721a0;font-size:13px!important}
-#settingsDrawer #arc:disabled{opacity:.8;border-style:dashed;background:#223a46;color:#e6dab5;font-size:10px}#quickActions button{background:linear-gradient(140deg,#203a49eb,#10202feb)!important;border:1px solid #b5c7b5b0!important;box-shadow:0 4px 12px #0007!important;font-size:12px}
-#training{position:absolute;z-index:35;top:calc(env(safe-area-inset-top,0px) + 108px);left:4%;right:4%;padding:11px 12px;background:linear-gradient(120deg,#09192fe6,#24414fea);border:1px solid #f1dea1;border-radius:16px;box-shadow:0 5px 26px #071c24b8;text-align:center;pointer-events:none}
-#training[hidden]{display:none!important}#trainingStep{font-size:11px;letter-spacing:2px;color:#f2e09d;font-weight:900}#trainingTitle{display:block;color:#fff;font-size:19px;font-weight:1000;margin-top:4px}#trainingPrompt{font-size:13px;color:#dff3ef}#trainingAnimation{position:relative;margin:7px auto 0;height:32px;width:58px;color:#dfff83;font-size:29px;font-weight:900;animation:coachUp 1.5s ease-in-out infinite alternate}
-#trainingAnimation i{position:absolute;top:16px;left:6px;width:42px;height:2px;background:#deff96;transform:rotate(-30deg);opacity:.7}#trainingAnimation b{font-size:25px}#trainingControls{position:absolute;right:8px;top:8px;pointer-events:auto}#trainingControls button{border-radius:9px;padding:5px 9px;min-height:28px;font-size:10px;background:#203747eb;color:#fff}
-@keyframes coachUp {from{transform:translateY(9px);opacity:.65}to{transform:translateY(-7px);opacity:1}}
-#training[data-action=grass]{top:auto;bottom:180px;left:4%;right:25%;}#training[data-action=rain]{top:130px}#training[data-action=ground]{top:120px}
-@media(min-width:700px){#training{left:32%;right:32%}}
-</style></head><body><main><header><div><h1>FOOTY FLICK</h1><small>V0.13 · CINEMATIC GAMEPLAY + CATCH</small></div><b id="score">0 / 54</b></header><nav><button id="trad" class="on">Goal kicking</button><button id="arc" disabled title="Arcade environments and targets are being redesigned">Arcade · Coming Soon</button><button id="practice">Practice</button><button id="season">Tournament</button></nav><section id="clubPanel"><div class="clubTop"><label>TEAM NAME <input id="teamName" maxlength="22" placeholder="Your team"></label><label>PRIMARY <input id="teamColor" type="color" value="#d62e3e"></label><label>SECONDARY <input id="teamTrim" type="color" value="#e6eee9"></label><label>TEAM EMBLEM <input id="teamLogo" type="file" accept="image/png,image/jpeg,image/webp"></label></div><p id="logoHint" class="muted tiny">Upload an emblem to suggest jumper colors and any readable team name. Images stay on this device.</p><div class="logoRightsRow"><label><input type="checkbox" id="logoRights"> I own this image or have permission to use it</label><button type="button" id="removeLogo">Remove logo</button></div><div class="clubBottom"><span id="clubPreview">YOUR CLUB</span><label>KICKS <select id="gameLength"><option>6</option><option>8</option><option>10</option><option>12</option></select></label><button id="randomRound">New challenges</button><button id="soundToggle">Sound: on</button></div></section>
-<section id="weatherPanel" class="toolbar"><label>VENUE <select id="venueSelect"><option value="auto">Auto</option><option value="stadium">Major stadium</option><option value="local">Community oval</option><option value="park">Public park</option><option value="school">School ground</option></select></label><label>CONDITIONS <select id="weatherSelect"><option value="auto">Mixed</option><option value="dry">Fine</option><option value="rain">Rain</option><option value="glare">Low sun</option><option value="wind">Windy</option></select></label><button id="grassButton">🌱 Toss grass</button><button id="wipeButton">💧 Wipe ball</button></section>
-<section id="seasonPanel" hidden><div class="sectionTitle">LOCAL TOURNAMENT · PASS AND PLAY</div><p class="tiny muted">All players use this phone. Online invitations and remote matches are not yet available.</p><textarea id="teamList" rows="3" placeholder="Your team, Harbour Hawks, Westside Wolves">YOUR CLUB, Harbour Hawks, Westside Wolves, Ridge Rovers</textarea><div class="toolbar"><label>FORMAT <select id="seasonFormat"><option value="league">League + finals</option><option value="quick">Quick shootout (first two teams)</option></select></label><button id="createSeason">Create competition</button></div><div id="seasonInfo"></div><div id="seasonLadder"></div><button id="stopSeason" hidden>Exit tournament</button></section>
-<div id="stage"><div id="grassPatch" role="button" aria-label="Swipe upward from grass to toss it into the wind" tabindex="0"><span>🌱</span><small>SWIPE UP · WIND CHECK</small></div><div id="weatherFX"></div><canvas id="grassCanvas"></canvas><div id="sunSpot" hidden title="Hold to shade the sun">☀</div><div id="wipePanel" hidden><b>DRY THE FOOTBALL!</b><canvas id="wetFooty" width="380" height="290" aria-label="Rub your finger over the wet football"></canvas><strong id="wipeCount">2.0</strong><small id="wipeMeter">Swipe over the ball to remove water</small></div><div id="hud"><span id="distance"></span><span id="wind"></span></div><svg id="trace" viewBox="0 0 1000 1000" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"><polyline id="trail" fill="none" stroke="#e5ff93" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><div id="conditionTip" hidden></div><div id="challenge" hidden></div><div id="powerHint" hidden></div><div id="guide">Flick from the football</div><div id="training" hidden><div id="trainingStep">TRAINING 1 / 4</div><strong id="trainingTitle">KICK THE FOOTBALL</strong><div id="trainingPrompt">Flick up from the ball</div><div id="trainingAnimation" aria-hidden="true"><i></i><b>↑</b></div><div id="trainingControls"><button type="button" id="skipTraining">Skip training</button></div></div><div id="bonus" hidden>+3 MARK BONUS!</div><div id="catchPrompt" hidden>SWIPE TO REACH THE BALL · +3</div></div><div id="result">Loading 3D stadium…</div><nav><button hidden id="air" class="on">Air</button><button hidden id="ground">Ground</button><button id="next">Restart</button></nav><nav hidden><button id="drop">Drop punt</button><button id="snap">Snap</button><button id="banana">Banana</button></nav><nav><button id="tutorial">Lessons</button><button id="slow">Slow motion: off</button><button id="replay">Replay</button></nav><nav id="lab" hidden><button id="change">Change shot</button><button id="gust">Change wind</button></nav><small>Swipe straight for a drop punt. Draw a curved flick for a snap, banana or close-range dribbler. The challenge selects the kick type.</small><div id="recordBoard"></div><div id="err"></div>
-<details id="legal"><summary>Credits, privacy and content guidelines</summary><p>Footy Flick is an independent, fictional Australian rules kicking game. Not affiliated with any football league, club or professional player. All stadium branding, players, names and game artwork in this preview are fictional.</p><p>Only upload team images you own or have permission to use. Uploaded emblems and local scores are stored in this browser; they are not publicly shared by this prototype. No accounts or in-game analytics are included. The graphics library is fetched from the jsDelivr content delivery network, so that network receives a technical request.</p><p>Three.js graphics engine © 2010–2026 three.js authors. MIT License: permission is granted, free of charge, to any person obtaining a copy of this software and associated documentation files to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. <a href="https://threejs.org/license/" target="_blank" rel="noopener">Original license.</a></p><p>Prototype only, not cleared for commercial publication. “Footy Flick” is a working title pending trademark and market clearance. Privacy, uploaded-content safety, store rules and qualified Australian legal review remain launch blockers. These credits and safeguards must be carried into every new build.</p></details><div id="teach" hidden><button id="closeTeach">Play interactive tutorial</button></div></main><script id="immersiveBoot">
-(function(){
- const $=id=>document.getElementById(id),main=document.querySelector('main'),stage=$('stage');
- const drawer=document.createElement('section');drawer.id='settingsDrawer';
- main.appendChild(drawer);
- // Everything non-gameplay goes behind the in-game menu: no bars above/below the field.
- for(const el of [...main.children])if(el!==stage&&el!==drawer)drawer.appendChild(el);
- const scoreDock=document.createElement('div');scoreDock.id='scoreDock';scoreDock.appendChild($('score'));stage.appendChild(scoreDock);
- const brand=document.createElement('div');brand.id='brandMini';brand.textContent='FOOTY FLICK';stage.appendChild(brand);
- const menuButton=document.createElement('button');menuButton.id='menuButton';menuButton.textContent='☰ MENU';stage.appendChild(menuButton);
- const closeMenu=document.createElement('button');closeMenu.id='closeMenu';closeMenu.textContent='BACK TO GAME';main.appendChild(closeMenu);
- const actions=document.createElement('div');actions.id='quickActions';stage.appendChild(actions);
- for(const id of ['grassButton','wipeButton','next'])actions.appendChild($(id));
- const result=$('result');result.id='scoreMessage';stage.appendChild(result);result.hidden=false;
- function setMenu(open){document.body.classList.toggle('menu-open',open)}
- menuButton.onclick=()=>setMenu(true);closeMenu.onclick=()=>setMenu(false);
- for(const b of ['trad','arc','practice','createSeason'])$(b)?.addEventListener('click',()=>setMenu(false));
- // Auto-show NEXT KICK only after the result or when playing in practice mode.
- const next=$('next'),observer=new MutationObserver(()=>{next.classList.toggle('show',next.textContent==='Next kick'||next.textContent==='Play again'||next.textContent==='Try again'||next.textContent==='Pass phone / next match')});
- observer.observe(next,{childList:true,characterData:true,subtree:true});
-})();
-</script><script type="module">
-
-import * as T from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
-
-const $=id=>document.getElementById(id), stage=$('stage'), scene=new T.Scene();
-scene.background=new T.Color(0x9ec9e4);
-scene.fog=new T.Fog(0x9ec9e4,100,220);
-const cam=new T.PerspectiveCamera(55,1,.05,250), renderer=new T.WebGLRenderer({
-antialias:true}
-);
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
-renderer.outputColorSpace=T.SRGBColorSpace;
-renderer.toneMapping=T.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.24;
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=T.PCFSoftShadowMap;
-stage.prepend(renderer.domElement);
-scene.add(new T.HemisphereLight(0xb7dfff,0x4d5d30,1.75));
-const sun=new T.DirectionalLight(0xffd8ab,2.8);
-sun.position.set(-46,25,24);
-scene.add(sun);
-sun.castShadow=true;
-sun.shadow.mapSize.set(1024,1024);
-sun.shadow.camera.left=-35;
-sun.shadow.camera.right=35;
-sun.shadow.camera.top=35;
-sun.shadow.camera.bottom=-35;
-sun.shadow.bias=-.0003;
-sun.target.position.set(0,0,-30);
-scene.add(sun.target);
-const mat=(color)=>new T.MeshStandardMaterial({
-color,roughness:.8}
-);
-function mesh(geo,m,x,y,z,parent=scene){
-let o=new T.Mesh(geo,m);
-o.position.set(x,y,z);
-parent.add(o);
-return o}
-function box(w,h,d,m,x,y,z,parent=scene){
-return mesh(new T.BoxGeometry(w,h,d),m,x,y,z,parent)}
-
-let seed=4;
-function rand(){
-seed=(seed*1664525+1013904223)>>>0;
-return seed/4294967296}
-const tex=document.createElement('canvas');
-tex.width=tex.height=512;
-let ctx=tex.getContext('2d');
-ctx.fillStyle='#417b39';
-ctx.fillRect(0,0,512,512);
-for(let j=0;
-j<30000;
-j++){
-ctx.fillStyle=rand()>.5?'#80a74a55':'#183e2255';
-ctx.fillRect(rand()*512,rand()*512,1+rand()*2,3+rand()*5)}
-let grass=new T.CanvasTexture(tex);
-grass.colorSpace=T.SRGBColorSpace;
-grass.wrapS=grass.wrapT=T.RepeatWrapping;
-grass.repeat.set(55,55);
-grass.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
-let turf=mesh(new T.PlaneGeometry(190,190),new T.MeshStandardMaterial({
-map:grass}
-),0,0,-40);
-turf.rotation.x=-Math.PI/2;
-turf.receiveShadow=true;
-for(let j=0;
-j<15;
-j++) {
-let p=mesh(new T.PlaneGeometry(150,5),new T.MeshBasicMaterial({
-color:0xffffff,transparent:true,opacity:.075}
-),0,.012,-j*10+15);
-p.rotation.x=-Math.PI/2}
-const white=mat(0xf6f4e8),steel=mat(0x455661);
-function fieldLine(points){
-let curve=new T.CatmullRomCurve3(points);
-mesh(new T.TubeGeometry(curve,100,.045,5,false),white,0,0,0)}
-
-// Stadium bowl with individual seating rows and crowd colour variation.
-for(let k=0;
-k<3;
-k++){
-let ring=mesh(new T.CylinderGeometry(79+k*5,74+k*5,3,96,1,true),new T.MeshStandardMaterial({
-color:[0x425866,0x344653,0x637782][k],side:T.DoubleSide}
-),0,3+k*3,-35);
-ring.scale.z=.85}
-for(let j=0;
-j<120;
-j++){
-let a=j*Math.PI*2/120;
-for(let k=0;
-k<3;
-k++){
-let r=77+k*5;
-let o=box(2.9,.55,1.1,mat([0x95a9ae,0x385d7a,0xd0c7b1,0x687b87][Math.floor(rand()*4)]),Math.cos(a)*r,4+k*3, -35+Math.sin(a)*r*.85);
-o.rotation.y=-a+Math.PI/2}
-}
-for(let a of [-1,1])for(let z of [-85,15]){
-box(.5,20,.5,steel,a*65,10,z);
-box(7,2,.6,white,a*65,20,z)}
-
-// Stadium fascia, crowd and advertising boards.
-const crowdGroups=[];
-const fascia=mat(0x142d42), crowdGeo=new T.BoxGeometry(.32,.48,.32), crowdMats=[0xeee5d5,0x2b4f87,0xb74238,0x35404b,0xd2ad54].map(mat);
-for(let k=0;
-k<5;
-k++){
-let people=new T.InstancedMesh(crowdGeo,crowdMats[k],900),dummy=new T.Object3D();
-for(let j=0;
-j<900;
-j++){
-let a=rand()*Math.PI*2,row=Math.floor(rand()*7),r=77+row*1.2;
-dummy.position.set(Math.cos(a)*r,3.8+row*.85,-35+Math.sin(a)*r*.85);
-dummy.rotation.y=-a;
-dummy.updateMatrix();
-people.setMatrixAt(j,dummy.matrix)}
-scene.add(people);
-crowdGroups.push(people)}
-
-for(let j=0;
-j<72;
-j++){
-let a=j*Math.PI*2/72,r=71;
-let board=box(5.7,.85,.22,j%3===0?white:fascia,Math.cos(a)*r,.55,-35+Math.sin(a)*r*.85);
-board.rotation.y=-a+Math.PI/2;
-}
-
-// Sky dome with procedural atmospheric gradient and soft cloud bands.
-const sky=new T.Mesh(new T.SphereGeometry(225,32,20),new T.ShaderMaterial({
-side:T.BackSide,depthWrite:false,uniforms:{
-}
-,vertexShader:`varying vec3 v;void main(){v=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec3 v;void main(){vec3 d=normalize(v);float h=max(d.y,0.);vec3 twilight=vec3(.47,.56,.74);vec3 horizon=vec3(1.,.68,.55);vec3 upper=vec3(.24,.39,.66);vec3 c=mix(horizon,upper,pow(h,.55));float horizonGlow=pow(max(0.,1.-h*2.3),3.);c=mix(c,vec3(1.,.79,.57),horizonGlow*.4);float n=sin(d.x*35.+sin(d.z*24.)*2.)*sin(d.z*27.+sin(d.x*10.));float streak=sin(d.x*16.+d.z*11.)*.24+sin(d.x*31.-d.z*6.)*.1;float cl=smoothstep(.12,.68,n+streak)*smoothstep(.015,.13,h)*(1.-smoothstep(.55,.85,h));c=mix(c,vec3(1.,.76,.7),cl*.52);float s=max(0.,dot(d,normalize(vec3(-.64,.29,.18))));c+=vec3(.9,.69,.44)*pow(s,14.)*.12;c+=vec3(.9,.7,.4)*pow(s,380.)*.52;gl_FragColor=vec4(c,1.);}`}
-));
-scene.add(sky);
-// Match-day scenic details: all procedurally generated, no borrowed photos, logos or models.
-const scenic=new T.Group();scene.add(scenic);
-const cityMats=[0x687786,0x566a7c,0x7c7f88,0x5b6479,0x887f84].map(c=>new T.MeshStandardMaterial({color:c,roughness:.92}));
-const windowMaterial=new T.MeshBasicMaterial({color:0xffdca3});
-let skylineSeed=173;
-function rngScene(){skylineSeed=(skylineSeed*1664525+1013904223)>>>0;return skylineSeed/4294967296}
-for(let j=0;j<46;j++){
-  let xx=-85+j*3.75,hh=6+rngScene()*24,ww=1.9+rngScene()*3.8;
-  if(Math.abs(xx)<18 && j%3===0)hh+=11;
-  let tower=box(ww,hh,3.1+rngScene()*2.5,cityMats[j%cityMats.length],xx,hh/2,-136-rngScene()*9,scenic);
-  if(j%3===0){box(.18,2,.18,mat(0xb4bac3),xx,hh+1,tower.position.z,scenic)}
-  for(let r=0;r<Math.floor(hh/2);r++)if(j%3===0){for(let col of [-1,1]){
-    let win=box(.25,.19,.02,windowMaterial,xx+col*ww*.25,r*2+2,tower.position.z+1.63,scenic);win.visible=true;
-  }}
-}
-const distantTrees=new T.InstancedMesh(new T.IcosahedronGeometry(1,0),mat(0x304e39),220);
-let treesDummy=new T.Object3D();for(let j=0;j<220;j++){
- let xx=-87+rngScene()*174, zz=-109-rngScene()*11, sz=1.9+rngScene()*4.2;
- treesDummy.position.set(xx,sz*.40,zz);treesDummy.scale.set(sz*.82,sz,sz*.9);treesDummy.rotation.y=rngScene()*6.28;treesDummy.updateMatrix();distantTrees.setMatrixAt(j,treesDummy.matrix);
-}scenic.add(distantTrees);
-const turfTufts=new T.InstancedMesh(new T.ConeGeometry(.028,.16,3),new T.MeshStandardMaterial({color:0x6fa04c,roughness:1,side:T.DoubleSide}),6500);
-let tuftDummy=new T.Object3D();for(let j=0;j<6500;j++){
- let xx=(rngScene()-.5)*90, zz=-100+rngScene()*120, sc=.45+rngScene()*.95;
- tuftDummy.position.set(xx,.06,zz);tuftDummy.scale.set(sc,sc,sc);tuftDummy.rotation.set(0,rngScene()*6.28,(rngScene()-.5)*.45);tuftDummy.updateMatrix();turfTufts.setMatrixAt(j,tuftDummy.matrix);
-}scene.add(turfTufts);turfTufts.receiveShadow=false;
-// Soft illuminated stadium haze and closer broadcast-style foreground grass.
-const rays=new T.Group();scene.add(rays);
-for(let j=0;j<4;j++){
- let xx=(j%2?1:-1)*66,zz=j<2?-84:15;
- let panel=box(9,3.1,.28,new T.MeshBasicMaterial({color:0xf3e8ca}),xx,23,zz,rays);
- let glow=new T.Sprite(new T.SpriteMaterial({map:(()=>{let c=document.createElement('canvas');c.width=c.height=128;let g=c.getContext('2d'),a=g.createRadialGradient(64,64,1,64,64,64);a.addColorStop(0,'#fff7dcbb');a.addColorStop(.16,'#fff3b170');a.addColorStop(1,'#ffe59d00');g.fillStyle=a;g.fillRect(0,0,128,128);return new T.CanvasTexture(c)})(),transparent:true,depthWrite:false,blending:T.AdditiveBlending}));
- glow.position.set(xx,23,zz+.5);glow.scale.set(20,12,1);rays.add(glow);
-}
-
-
-// Tiered grandstand, roof canopy and structural ribs.
-const roofMat=mat(0xd3dce0), dark=mat(0x263945), concrete=mat(0x879399);
-function ellipseRing(r1,r2,y,m){
-let g=new T.RingGeometry(r1,r2,128);
-let o=mesh(g,m,0,y,-35);
-o.rotation.x=-Math.PI/2;
-o.scale.y=.85;
-return o}
-for(let k=0;
-k<8;
-k++){
-ellipseRing(74+k*1.7,75.7+k*1.7,3+k*1.05,concrete);
-let o=mesh(new T.CylinderGeometry(75.7+k*1.7,75.7+k*1.7,.55,128,1,true),new T.MeshStandardMaterial({
-color:k%2?0x253d52:0x536675,side:T.DoubleSide}
-),0,3+k*1.05,-35);
-o.scale.z=.85}
-ellipseRing(78,93,15.5,new T.MeshStandardMaterial({
-color:0xd7e1e5,side:T.DoubleSide,roughness:.65}
-));
-ellipseRing(78,79,15.35,new T.MeshStandardMaterial({
-color:0x203b4d,side:T.DoubleSide}
-));
-for(let j=0;
-j<48;
-j++){
-let a=j*Math.PI*2/48;
-let r=87;
-box(.45,13,.45,dark,Math.cos(a)*r,7.5,-35+Math.sin(a)*r*.85);
-let o=box(15,.45,.4,dark,Math.cos(a)*85,15.2,-35+Math.sin(a)*85*.85);
-o.rotation.y=-a;
-}
-
-// Broadcast-style LED advertising ribbon, repeated original fictional branding.
-const ad=document.createElement('canvas');
-ad.width=1024;
-ad.height=128;
-let ac=ad.getContext('2d');
-ac.fillStyle='#102b40';
-ac.fillRect(0,0,1024,128);
-ac.fillStyle='#b9ef58';
-ac.fillRect(0,0,1024,8);
-ac.fillRect(0,120,1024,8);
-ac.font='italic 900 66px Arial';
-ac.textAlign='center';
-ac.fillStyle='#ffffff';
-ac.fillText('FOOTY FLICK',512,88);
-let at=new T.CanvasTexture(ad);
-at.colorSpace=T.SRGBColorSpace;
-let am=new T.MeshBasicMaterial({
-map:at}
-);
-for(let j=0;
-j<72;
-j++){
-let a=j*Math.PI*2/72;
-let o=box(5.8,.75,.15,am,Math.cos(a)*70.7,.58,-35+Math.sin(a)*70.7*.85);
-o.rotation.y=-a+Math.PI/2;
-}
-
-// Stadium screen and floodlight arrays.
-for(let x of [-64,64])for(let z of [-85,15]){
-let panel=box(6,2.5,.35,dark,x,21,z);
-let lamps=new T.InstancedMesh(new T.BoxGeometry(.35,.32,.12),new T.MeshBasicMaterial({
-color:0xfff4d5}
-),48);
-let d=new T.Object3D();
-for(let j=0;
-j<12;
-j++)for(let k=0;
-k<4;
-k++){
-d.position.set(x-2.5+j*.45,20.35+k*.43,z+.23);
-d.updateMatrix();
-lamps.setMatrixAt(j*4+k,d.matrix)}
-scene.add(lamps)}
-
-let screenTex=document.createElement('canvas');
-screenTex.width=1024;
-screenTex.height=512;
-let sc=screenTex.getContext('2d');
-sc.fillStyle='#101f30';
-sc.fillRect(0,0,1024,512);
-sc.fillStyle='#b9ef58';
-sc.fillRect(0,0,1024,22);
-sc.textAlign='center';
-sc.fillStyle='white';
-sc.font='italic bold 100px Arial';
-sc.fillText('FOOTY FLICK',512,210);
-sc.font='bold 42px Arial';
-sc.fillStyle='#c9ed8b';
-sc.fillText('MATCH DAY  /  SKILL CHALLENGE',512,315);
-let st=new T.CanvasTexture(screenTex);
-st.colorSpace=T.SRGBColorSpace;
-box(14,7,.5,dark,0,12,-99);
-mesh(new T.PlaneGeometry(13.5,6.5),new T.MeshBasicMaterial({
-map:st}
-),0,12,-98.7);
-
-const closeStand=new T.Group();
-scene.add(closeStand);
-const standConcrete=mat(0x71818a),seatMat=mat(0x294b65);
-for(let r=0;
-r<8;
-r++){
-box(43,.36,1.05,standConcrete,0,.5+r*.55,-r*1.05,closeStand);
-box(43,.22,.25,seatMat,0,.82+r*.55,-r*1.05-.32,closeStand)}
-const peopleColors=[0x223e70,0xe6e6d8,0xa92f32,0xe0b548,0x38464d];
-let bodies=new T.InstancedMesh(new T.CapsuleGeometry(.15,.24,3,6),mat(0xffffff),800),heads=new T.InstancedMesh(new T.SphereGeometry(.105,8,6),mat(0xffffff),800),dude=new T.Object3D();
-for(let j=0;
-j<800;
-j++){
-let r=Math.floor(j/100),x=(j%100-49.5)*.42;
-dude.position.set(x+(rand()-.5)*.12,1.08+r*.55,-r*1.05);
-dude.updateMatrix();
-bodies.setMatrixAt(j,dude.matrix);
-bodies.setColorAt(j,new T.Color(peopleColors[Math.floor(rand()*5)]));
-dude.position.y+=.36;
-dude.updateMatrix();
-heads.setMatrixAt(j,dude.matrix);
-heads.setColorAt(j,new T.Color([0xc68f6b,0x82533b,0xe2b79a][Math.floor(rand()*3)]))}
-closeStand.add(bodies,heads);
-crowdGroups.push(bodies,heads);
-box(44,.9,.25,am,0,.55,1.1,closeStand);
-box(44,.12,.12,white,0,1.15,1.1,closeStand);
-for(let x of [-21,-10,0,10,21])box(.07,1.2,.07,steel,x,.6,1.1,closeStand);
-// Upper grandstand: continuous terracing, spectators, back wall and overhead roof.
-const upperCrowd=new T.InstancedMesh(new T.CapsuleGeometry(.17,.30,3,7),mat(0xffffff),1600);
-const upperHeads=new T.InstancedMesh(new T.SphereGeometry(.13,9,7),mat(0xffffff),1600);
-let standPerson=new T.Object3D();
-for(let r=8;r<24;r++){
-  box(55,.38,1.04,standConcrete,0,.5+r*.67,-r*.92,closeStand);
-  box(55,.20,.26,seatMat,0,.81+r*.67,-r*.92-.3,closeStand);
-  for(let j=0;j<100;j++){
-    const n=(r-8)*100+j, xx=(j-49.5)*.53;
-    standPerson.position.set(xx,1.08+r*.67,-r*.92);standPerson.updateMatrix();
-    upperCrowd.setMatrixAt(n,standPerson.matrix);
-    upperCrowd.setColorAt(n,new T.Color(peopleColors[(r*19+j*7)%peopleColors.length]));
-    standPerson.position.y+=.34;standPerson.updateMatrix();
-    upperHeads.setMatrixAt(n,standPerson.matrix);
-    upperHeads.setColorAt(n,new T.Color([0xc68f6b,0x82533b,0xe2b79a][(r+j)%3]));
-  }
-}
-closeStand.add(upperCrowd,upperHeads);crowdGroups.push(upperCrowd,upperHeads);
-box(57,17,.9,concrete,0,9,-23.9,closeStand); // solid back wall
-box(60,.65,26,roofMat,0,19.1,-10.5,closeStand); // covered grandstand
-for(let x of [-27,0,27]){box(.5,19,.6,steel,x,9.5,-23.6,closeStand);box(.28,2.8,26,steel,x,17.7,-10.5,closeStand)}
-box(57,1,.4,dark,0,18.9,1.8,closeStand); // dark roof fascia
-// Angled stadium roof underside, structural trusses and private viewing boxes.
-for(let x=-27;x<=27;x+=3.85){
- let r=box(.12,.16,29,steel,x,17.4,-11,closeStand);r.rotation.x=.07;
- let l=box(.12,.12,28,mat(0xf7ead5),x,18.1,-11,closeStand);l.rotation.x=.07;
-}
-for(let x=-26;x<=26;x+=6.5){
- box(5.3,2.1,.9,mat(0x283949),x,15.4,-23.0,closeStand);
- box(4.5,1.5,.12,new T.MeshBasicMaterial({color:0x7598a8}),x,15.55,-22.45,closeStand);
-}
-for(let j=0;j<12;j++){
- const x=-27+j*4.9;
- box(2.6,.75,.10,am,x,4.6,1.6,closeStand);
-}
-
-
-
-// Stadium-only scene elements can be hidden for community, school and park venues.
-const stadiumObjects=[...scene.children].filter(x=>x!==sky && x!==turf && x!==sun && x!==scenic && x!==turfTufts && x!==rays && !x.isLight && x!==sun.target);
-const venueDecor=new T.Group();scene.add(venueDecor);
-function clearGroup(g){while(g.children.length){let a=g.children[0];g.remove(a);a.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material&&o.material.dispose&&o.material!==white&&o.material!==steel)o.material.dispose()})}}
-const vGrass=mat(0x366e42),vTrunk=mat(0x70513b),vBrick=mat(0xa98a71),vRoof=mat(0x3d4b51),vFence=mat(0xa9afb2);
-function tree(x,z,h=5){mesh(new T.CylinderGeometry(.25,.36,h*.55,9),vTrunk,x,h*.28,z,venueDecor);for(let dy of [0,.7])mesh(new T.IcosahedronGeometry(h*.27,1),vGrass,x,h*.56+dy,z,venueDecor)}
-function standingPeople(z){for(let j=0;j<60;j++){let x=(j-30)*.8;let top=box(.34,.45,.24,mat([0xe6ae42,0x344e76,0xaa4439,0x667c65][j%4]),x,1.06,z+(j%3)*.5,venueDecor);mesh(new T.SphereGeometry(.16,6,5),skin,x,1.44,top.position.z,venueDecor)}}
-function setVenue(v){
- const stadium=v==='stadium';for(let o of stadiumObjects)o.visible=stadium;scenic.visible=stadium;rays.visible=stadium;
- clearGroup(venueDecor);if(stadium)return;
- let depth=-shot[0];
- // Distinct, original community venues rather than copies of named real locations.
- for(let x of [-27,27])for(let z of [-65,8])tree(x,z,4.5+(Math.abs(x)%3));
- if(v==='park'){for(let x of [-13,11]){tree(x,depth-14,7);box(3,.18,.7,vTrunk,x,1,depth-11,venueDecor);for(let dx of [-1,1])box(.15,1,.6,vTrunk,x+dx, .5,depth-11,venueDecor)}
- for(let x of [-22,22])tree(x,depth-35,8)}
- if(v==='local'){box(22,3,7,vBrick,0,1.5,depth-29,venueDecor);box(24,.7,8,vRoof,0,3.25,depth-29,venueDecor);
- for(let x=-9;x<=9;x+=3)box(1.8,1.3,.08,mat(0x426b85),x,2.1,depth-25.35,venueDecor);
- box(9,2.5,.4,vRoof,-16,2,depth-19,venueDecor);standingPeople(depth-9)}
- if(v==='school'){box(36,6,9,vBrick,0,3,depth-37,venueDecor);box(38,.7,10,vRoof,0,6.4,depth-37,venueDecor);
- for(let x=-16;x<=16;x+=4)box(2.1,2,.15,mat(0x6490a1),x,3.2,depth-32.38,venueDecor);
- for(let x of [-19,19])box(.15,2,.15,vFence,x,1,depth-16,venueDecor);box(38,.07,.07,vFence,0,2,depth-16,venueDecor)}
- for(let z of [depth-13,depth-20])for(let x of [-20,20])box(.09,1.2,.1,vFence,x,.6,z,venueDecor);
-}
-
-const target=new T.Group();
-scene.add(target);
-const field=new T.Group();
-scene.add(field);
-const arcadeKinds=['trees','stumps','door','bin','tyre','wall','cones','bench','car','hoop'];
-
-function targetBuild(){
-target.clear();
-field.clear();
-if(mode==='arc'){
-
-let kind=arcadeKinds[(i+roundSeed)%10],wood=mat(0x76523b),green=mat(0x32683d),bright=mat(0xe9e2c9);
-
-if(kind==='trees'){
-for(let x of [-2.4,2.4]){
-mesh(new T.CylinderGeometry(.3,.4,5,10),wood,x,2.5,0,target);
-mesh(new T.SphereGeometry(1.7,12,8),green,x,5.2,0,target)}
- }
-
-if(kind==='door'){
-for(let x of [-1.4,1.4])box(.35,3.6,.4,wood,x,1.8,0,target);
-box(3.15,.35,.4,wood,0,3.55,0,target);
-}
-
-if(kind==='stumps'){
-for(let x of [-.33,0,.33])mesh(new T.CylinderGeometry(.045,.05,1.25,8),bright,x,.63,0,target);
-box(.9,.06,.08,wood,0,1.27,0,target);
-}
-
-if(kind==='tyre'){
-let ring=mesh(new T.TorusGeometry(.92,.21,12,32),mat(0x202326),0,2.1,0,target);
-ring.rotation.y=0;
-for(let x of [-1.4,1.4])box(.13,3.2,.15,wood,x,1.6,0,target);
-box(3.1,.15,.15,wood,0,3.25,0,target)}
-
-if(kind==='wall'){
-box(3.8,2.9,.25,mat(0x986a55),0,1.45,0,target);
-let disc=mesh(new T.CircleGeometry(.55,32),mat(0xf1d856),0,1.8,.14,target);
-disc.material.side=T.DoubleSide;
-}
-
-if(kind==='cones'){for(let x of [-.65,0,.65]){let m=mesh(new T.ConeGeometry(.22,.9,10),mat(0xf08c36),x,.45,0,target);box(.38,.08,.38,mat(0xe7e3d6),x,.07,0,target)}}
-if(kind==='bench'){box(3,.2,1.0,wood,0,1.05,0,target);for(let x of [-1.1,1.1])box(.18,1.2,.2,wood,x,.6,0,target);box(3,.75,.16,wood,0,1.55,.42,target)}
-if(kind==='car'){let carMat=mat(0x446d86);box(3.3,1.1,2.3,carMat,0,.85,0,target);box(2.6,.85,1.7,mat(0x7895a5),0,1.68,.3,target);box(1.6,.13,1.3,mat(0x22292d),0,1.35,-1,target);for(let x of [-1.15,1.15])for(let z of [-.78,.78]){let wheel=mesh(new T.CylinderGeometry(.35,.35,.12,12),mat(0x242627),x,.38,z,target);wheel.rotation.z=Math.PI/2}}
-if(kind==='hoop'){box(.1,3.8,.12,wood,0,1.9,0,target);box(2.1,1.45,.14,bright,0,3.3,.2,target);let ring=mesh(new T.TorusGeometry(.55,.06,10,24),mat(0xee662c),0,2.72,.7,target);ring.rotation.x=Math.PI/2}
-
-if(kind==='bin'){
-let bin=mat(0x287d51),rim=mat(0x132d24);
-box(1.3,1.15,.12,bin,0,.575,-.65,target);
-box(1.3,1.15,.12,bin,0,.575,.65,target);
-for(let x of [-.65,.65])box(.12,1.15,1.3,bin,x,.575,0,target);
-for(let x of [-.65,.65])box(.12,.08,1.4,rim,x,1.16,0,target)}
-
-}
-else{
-for(let x of [-9.6,-3.2,3.2,9.6]){
-let h=Math.abs(x)<4?12:7;
-mesh(new T.CylinderGeometry(.095,.095,h,12),white,x,h/2,0,target);
-box(.35,1.4,.35,mat(0x233d5d),x,.7,0,target)}
-box(19.2,.025,.09,white,0,.025,0,target);
-let pts=[];
-for(let j=0;
-j<=60;
-j++){
-let a=-1.15+2.3*j/60;
-pts.push(new T.Vector3(50*Math.sin(a),.025,-shot[0]+50*Math.cos(a)))}
-mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),80,.045,5,false),white,0,0,0,field)}
-target.position.z=-shot[0];
-closeStand.position.z=-shot[0]-(mode==='arc'?18:7);
-}
-
-// Simplified visible teammate with customisable guernsey texture placeholder.
-const teammate=new T.Group();
-scene.add(teammate);
-const jersey=mat(0x193e79),skin=mat(0xd7a77f),shorts=mat(0xf0ede2);
-
-const torso=mesh(new T.CylinderGeometry(.26,.36,.75,12),jersey,0,1.42,0,teammate);
-torso.userData.clubJersey=true;
-
-mesh(new T.SphereGeometry(.21,12,10),skin,0,2.06,0,teammate);
-
-for(let x of [-.17,.17]){
-box(.18,.72,.22,shorts,x,.72,0,teammate);
-box(.16,.65,.17,skin,x,.22,0,teammate)}
-
-for(let x of [-.37,.37]){
-let arm=box(.16,.62,.16,skin,x,1.48,0,teammate);
-arm.rotation.z=x<0?-.35:.35}
-
-// Foreground player, styled as an original fictional player, with readable team colours.
-const kicker=new T.Group();scene.add(kicker);
-const kTorso=mesh(new T.CylinderGeometry(.28,.38,.79,12),jersey.clone(),0,1.47,0,kicker);kTorso.userData.clubJersey=true;
-const kTrim=box(.54,.085,.39,mat(0xebebdd),0,1.69,0,kicker);kTrim.userData.clubTrim=true;
-const kHead=mesh(new T.SphereGeometry(.20,16,12),skin,0,2.08,0,kicker);
-let kHair=mesh(new T.SphereGeometry(.2,16,10,0,Math.PI*2,0,Math.PI/2),mat(0x3f2b24),0,2.18,0,kicker);
-for(let x of [-.17,.17]){let leg=box(.17,.75,.23,shorts.clone(),x,.76,0,kicker);let sock=box(.145,.48,.17,mat(0xccdde7),x,.32,.01,kicker);let boot=box(.19,.12,.42,mat(0x141c22),x,.12,-.13,kicker)}
-const kArmL=box(.17,.65,.16,skin,-.38,1.46,0,kicker),kArmR=box(.17,.65,.16,skin,.38,1.46,0,kicker);kArmL.rotation.z=-.25;kArmR.rotation.z=.28;
-
-const logoCanvas=document.createElement('canvas');
-logoCanvas.width=256;
-logoCanvas.height=256;
-let lg=logoCanvas.getContext('2d');
-lg.fillStyle='#e4f68a';
-lg.font='bold 95px Arial';
-lg.textAlign='center';
-lg.fillText('FF',128,156);
-let logoTex=new T.CanvasTexture(logoCanvas);
-let badge=mesh(new T.PlaneGeometry(.37,.37),new T.MeshBasicMaterial({
-map:logoTex,transparent:true,side:T.DoubleSide}
-),0,1.45,.31,teammate);
-
-const kBadge=mesh(new T.PlaneGeometry(.38,.38),new T.MeshBasicMaterial({map:logoTex,transparent:true,side:T.DoubleSide}),0,1.45,.35,kicker);
-// Sculpted procedural character rigs; these are original, not images or models copied from an AFL game.
-// Keep the existing emblem planes and ball controls; replace blocky placeholder body geometry.
-for(const part of [...kicker.children])if(part!==kBadge)part.visible=false;
-for(const part of [...teammate.children])if(part!==badge)part.visible=false;
-const kSkin=new T.MeshStandardMaterial({color:0xc99478,roughness:.86}),shadeSkin=new T.MeshStandardMaterial({color:0x9b674c,roughness:.93}),hairMat=new T.MeshStandardMaterial({color:0x292522,roughness:1});
-const bootMat=new T.MeshStandardMaterial({color:0x141a1e,roughness:.52}),shortMat=new T.MeshStandardMaterial({color:0x242a36,roughness:.9}),sockMat=new T.MeshStandardMaterial({color:0xe9eadc,roughness:.84});
-const coloredText=(name)=>{let canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;let g=canvas.getContext('2d');g.clearRect(0,0,512,256);g.textAlign='center';g.fillStyle='#ffffff';g.font='1000 146px Arial';g.strokeStyle='#1b2027';g.lineWidth=12;g.strokeText('23',256,168);g.fillText('23',256,168);g.font='900 34px Arial';g.strokeText(name.toUpperCase().slice(0,15),256,223);g.fillText(name.toUpperCase().slice(0,15),256,223);let tx=new T.CanvasTexture(canvas);tx.colorSpace=T.SRGBColorSpace;return tx};
-let backNumbers=[];
-function smooth(g,m,px,py,pz,sx,sy,sz,parent){let o=mesh(g,m,px,py,pz,parent);o.scale.set(sx,sy,sz);o.castShadow=true;return o}
-function playerRig(parent,isKicker){
- let rig=new T.Group();parent.add(rig);
- const teamMat=jersey.clone();teamMat.color.set(clubColor);teamMat.roughness=.95;
- const trimMat=mat(0xe6eee9);trimMat.color.set(clubTrim);
- function oval(m,x,y,z,sx,sy,sz){return smooth(new T.SphereGeometry(1,18,14),m,x,y,z,sx,sy,sz,rig)}
- // Anatomical shape from multiple rounded masses, no box limbs.
- let chest=oval(teamMat,0,1.43,0,.36,.50,.245);chest.userData.clubJersey=true;
- oval(teamMat,0,1.27,-.018,.31,.28,.24).userData.clubJersey=true;
- for(const side of [-1,1]){
-   oval(trimMat,side*.26,1.75,.01,.12,.08,.19).userData.clubTrim=true;
-   oval(teamMat,side*.34,1.62,0,.17,.15,.20).userData.clubJersey=true;
- }
- let neckline=oval(trimMat,0,1.85,.032,.19,.08,.18);neckline.userData.clubTrim=true;
- oval(kSkin,0,1.91,0,.12,.17,.12);
- // Head, jaw, nose, ears and short textured hair; angled toward goal.
- oval(kSkin,0,2.19,.02,.19,.25,.17);
- oval(kSkin,0,2.05,.105,.105,.07,.095);
- oval(kSkin,0,2.19,.20,.038,.060,.07);
- for(const side of [-1,1]){
-   oval(kSkin,side*.20,2.16,.0,.04,.085,.035);
-   oval(shadeSkin,side*.065,2.205,.18,.036,.018,.012);
-   oval(bootMat,side*.062,2.195,.193,.013,.014,.014);
- }
- oval(hairMat,0,2.38,-.012,.205,.10,.186);
- for(let j=0;j<15;j++){let x=(j%5-2)*.075,z=.005+(Math.floor(j/5)-1)*.09;
-  let strand=oval(hairMat,x,2.475+(j%4)*.017,z,.055,.074,.058);strand.rotation.z=(j%3-1)*.35;
- }
- // Shoulders, arms and hands on pivots for grass toss / kicking follow through.
- const elbows=[];
- for(const side of [-1,1]){
-  const arm=new T.Group();arm.position.set(side*.39,1.68,0);rig.add(arm);
-  const upper=smooth(new T.SphereGeometry(1,12,10),kSkin,side*.06,-.18,.02,.125,.24,.12,arm);upper.rotation.z=side*.2;
-  let sleeve=smooth(new T.SphereGeometry(1,12,10),teamMat,side*.025,-.03,.015,.155,.145,.14,arm);sleeve.userData.clubJersey=true;
-  const fore=smooth(new T.SphereGeometry(1,12,10),kSkin,side*.11,-.44,.12,.102,.19,.102,arm);fore.rotation.z=-side*.16;
-  smooth(new T.SphereGeometry(1,10,8),kSkin,side*.12,-.61,.16,.12,.105,.075,arm);
-  elbows.push(arm);
- }
- for(const side of [-1,1]){
-  oval(shortMat,side*.18,1.02,0,.21,.27,.215);
-  oval(shortMat,side*.18,.83,0,.178,.155,.178);
-  oval(kSkin,side*.18,.66,.018,.13,.23,.12);
-  oval(sockMat,side*.18,.34,.018,.128,.30,.126);
-  oval(bootMat,side*.18,.105,.095,.155,.12,.32);
-  for(let j=0;j<4;j++)oval(trimMat,side*.18,.075,.25-j*.1,.09,.015,.02).userData.clubTrim=true;
- }
- // Broad secondary diagonal sash, designed as parts of the uniform; obeys custom colours.
- let sash=box(.105,.74,.017,trimMat,.085,1.47,.253,rig);sash.rotation.z=.46;sash.userData.clubTrim=true;sash.castShadow=false;
- let waistband=box(.6,.085,.38,trimMat,0,1.11,0,rig);waistband.userData.clubTrim=true;
- // Guernsey back number and user team name, refreshed on team settings changes.
- let numberPlane=mesh(new T.PlaneGeometry(.55,.35),new T.MeshBasicMaterial({map:coloredText(clubName),transparent:true,side:T.DoubleSide,depthWrite:false}),0,1.43,-.252,rig);numberPlane.rotation.y=Math.PI;backNumbers.push(numberPlane);
- parent.userData.premiumArms=elbows;parent.userData.premiumRig=rig;
- rig.traverse(m=>{if(m.isMesh)m.castShadow=true});
- return rig;
-}
-playerRig(kicker,true);playerRig(teammate,false);
-// Avoid the new player body masking uploaded image badge.
-kBadge.position.z=.29;badge.position.z=.29;
-
-
-// Leather texture is attached to the actual mesh;
-// rotation is a quaternion in world space.
-const leather=document.createElement('canvas');
-leather.width=1024;
-leather.height=512;
-let l=leather.getContext('2d');
-l.fillStyle='#a92d26';
-l.fillRect(0,0,1024,512);
-for(let j=0;
-j<45000;
-j++){
-l.fillStyle=rand()>.5?'#ffad8350':'#3d090a40';
-l.fillRect(rand()*1024,rand()*512,1.4,1.4)}
-for(let x of [0,256,512,768,1024]){
-l.strokeStyle='#54201b';
-l.lineWidth=4;
-l.beginPath();
-l.moveTo(x,0);
-l.lineTo(x,512);
-l.stroke()}
-l.fillStyle='#f0d9ac';
-l.font='italic bold 40px Georgia';
-l.fillText('FOOTY',310,250);
-l.font='bold 15px Arial';
-l.fillText('MATCH SERIES',320,275);
-l.strokeStyle='#e7b78b';
-l.lineWidth=1.5;
-for(let x of [5,251,261,507,517,763,773,1019]){
-l.setLineDash([3,5]);
-l.beginPath();
-l.moveTo(x,15);
-l.lineTo(x,497);
-l.stroke()}
-l.setLineDash([]);
-l.fillStyle='#e8d7ba';
-for(let j=0;
-j<9;
-j++)l.fillRect(756,175+j*17,24,5);
-let lt=new T.CanvasTexture(leather);
-lt.colorSpace=T.SRGBColorSpace;
-let ball=new T.Group();
-scene.add(ball);
-let shell=mesh(new T.SphereGeometry(1,48,32),new T.MeshStandardMaterial({
-map:lt,roughness:.64}
-),0,0,0,ball);
-shell.scale.set(.088,.145,.088);
-shell.castShadow=true;
-lt.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
-let bumpCanvas=document.createElement('canvas');
-bumpCanvas.width=512;
-bumpCanvas.height=256;
-let bc=bumpCanvas.getContext('2d');
-bc.fillStyle='#888';
-bc.fillRect(0,0,512,256);
-for(let j=0;
-j<20000;
-j++){
-bc.fillStyle=rand()>.5?'#aaa':'#666';
-bc.fillRect(rand()*512,rand()*256,1.5,1.5)}
-shell.material.bumpMap=new T.CanvasTexture(bumpCanvas);
-shell.material.bumpScale=.0012;
-shell.material.roughness=.52;
-const shadow=mesh(new T.CircleGeometry(.17,32),new T.MeshBasicMaterial({
-color:0x172a17,transparent:true,opacity:.35}
-),0,.03,0);
-shadow.rotation.x=-Math.PI/2;
-
-let gameLength=6,roundSeed=0,soundOn=true,clubName='YOUR CLUB',clubColor='#d62e3e',clubTrim='#e6eee9',clubLogo=null;
-let venue='stadium',weather='dry',wipeQuality=0,slipRisk=0,wiping=false,wipeEnds=0,wipePath=null,grassFlight=[],shadeSun=false,season=null,seasonActive=false;
-let mode='trad',practice=false,ground=false,slow=false,i=0,score=0,shot,flight=null,done=false,start=null,lastKick=null,windOverride=null, technique='drop', replaying=false;
-let training={active:false,step:0,advancing:false};
-// Behind-the-goals catching phase: real touchscreen positioning, not an auto-awarded bonus.
-const catchPlay={active:false,camera:false,dragStart:null,dragX:0,desiredX:0,swiped:false};
-const catchRing=new T.Mesh(new T.TorusGeometry(.82,.075,7,36),new T.MeshBasicMaterial({color:0xeeff8c,transparent:true,opacity:.87,depthTest:false}));
-catchRing.rotation.x=Math.PI/2;catchRing.visible=false;catchRing.renderOrder=8;scene.add(catchRing);
-function catchingVenue(){return venue==='local'||venue==='park'||venue==='school'}
-function catchPoint(f){let markZ=-shot[0]-9;let t=T.MathUtils.clamp((markZ-f.z)/Math.min(-.1,f.vz),0,2.4);
- return {x:T.MathUtils.clamp(f.x+f.vx*t+.5*(f.spin*3.4+shot[2]*.46)*t*t,-6,6),y:Math.max(.13,f.y+f.vy*t-4.905*t*t)};}
-function maybeStartCatch(f){
- if(catchPlay.camera||training.active||replaying||mode!=='trad'||!catchingVenue()||f.scored!==null||f.vz>=-5)return;
- let distanceToPosts=f.z+shot[0];if(distanceToPosts>16||distanceToPosts<1||f.t<.45)return;
- let t=distanceToPosts/Math.max(1,-f.vz),expectedX=f.x+f.vx*t+.5*(f.spin*3.4+shot[2]*.46)*t*t;
- let expectedY=f.y+f.vy*t-4.905*t*t;
- if(Math.abs(expectedX)>=2.8||expectedY<.3)return;
- catchPlay.active=true;catchPlay.camera=true;catchPlay.desiredX=teammate.position.x;
- catchPlay.swiped=false;catchPlay.dragStart=null;
- $('catchPrompt').hidden=false;$('catchPrompt').textContent='MARK CHANCE! SWIPE LEFT OR RIGHT TO REACH THE BALL · +3';
- $('conditionTip').hidden=true;$('guide').textContent='CONTROL THE PLAYER · SWIPE TOWARD THE LANDING CIRCLE';
- catchRing.visible=true;
-}
-
-const shots=[[24,0,3],[37,-16,6],[49,9,-12],[11,10,0],[57,-15,-11],[33,12,13],[42,-9,-6],[10,-10,3],[52,0,8],[20,18,-4],[18,3,1],[59,-11,-9]],arcShots=[[17,0,0],[21,-4,5],[24,5,-8],[15,-7,7],[28,6,-10],[22,8,12],[19,4,-4],[13,0,3],[25,-6,6],[30,8,-4],[22,-9,0],[16,3,6]];
-let q=new T.Quaternion(), axis=new T.Vector3(), leanQ=new T.Quaternion(), origin=new T.Vector3(), screen=new T.Vector3();
-function resize(){
-let w=stage.clientWidth,h=stage.clientHeight;
-renderer.setSize(w,h,false);
-cam.aspect=w/h;
-cam.updateProjectionMatrix()}
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#10202c"><meta name="mobile-web-app-capable" content="yes"><title>Footy Flick · V0.14 · Reliable Stadium</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#f4f8f9;background:#07141e;font-size:14px}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}button,input,select{font:inherit}button{touch-action:manipulation;color:#fff;background:#142a38e8;border:1px solid #88b5ba70;border-radius:13px;cursor:pointer;min-height:42px;padding:10px 14px;font-weight:750}button:active{transform:scale(.97)}button:disabled{opacity:.4}button.primary{background:linear-gradient(130deg,#e4fb94,#b1d44f);color:#172720;border-color:#e3fbb0}button:focus-visible{outline:3px solid #dbfb7e}#app{position:fixed;inset:0;background:linear-gradient(180deg,#7a9db6 0%,#b9cdd1 35%,#365c47 60%,#163724 100%);overflow:hidden}#game{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}#weatherFx{position:absolute;inset:0;pointer-events:none;width:100%;height:100%}#top{position:absolute;top:env(safe-area-inset-top,0px);left:0;right:0;display:flex;align-items:flex-start;gap:8px;justify-content:space-between;padding:12px 12px;pointer-events:none}#top>*{pointer-events:auto}#brand{font-size:17px;font-style:italic;font-weight:1000;letter-spacing:-1.2px;color:#fff;text-shadow:0 2px 6px #001b24}#brand small{display:block;font-size:9px;font-style:normal;letter-spacing:1.8px;color:#e4f9a7}#score{padding:8px 13px;background:#10232add;border:1px solid #d5f5a568;border-radius:13px;text-align:center;min-width:90px;box-shadow:0 3px 18px #0004;font-size:20px;font-weight:950;color:#ecffa5}#score small{display:block;color:#c2d5dd;font-size:9px;font-weight:700;letter-spacing:1px}#menuButton{min-height:40px;padding:9px 12px;font-size:12px}#meta{position:absolute;top:78px;left:12px;display:flex;flex-direction:column;gap:5px;max-width:65%;pointer-events:none}#meta span{align-self:flex-start;background:#102a32b9;padding:6px 9px;border:1px solid #b8d9ce45;border-radius:8px;text-shadow:0 1px 3px #000;font-size:11px;font-weight:700}#challenge{position:absolute;top:135px;left:10%;right:10%;padding:9px;text-align:center;border:1px solid #ffce72;background:#8e4115ec;border-radius:12px;font-weight:950;letter-spacing:1px;animation:alertPulse 1.15s infinite}#challenge[hidden]{display:none}@keyframes alertPulse{50%{background:#f5aa30;color:#182a2d}}#actions{position:absolute;right:12px;bottom:calc(124px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;max-width:140px}#actions button{background:#0b2835df;font-size:12px;min-height:50px}#grassPatch{position:absolute;left:12px;bottom:calc(128px + env(safe-area-inset-bottom,0px));width:120px;height:92px;border-radius:18px;background:linear-gradient(140deg,#234d35c7,#102b22c7);border:1px solid #9cd36c88;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;touch-action:none;user-select:none;box-shadow:0 6px 18px #0019}#grassPatch b{font-size:30px}#grassPatch small{font-size:9px;letter-spacing:.6px;font-weight:900}#grassPatch[hidden]{display:none}#bottom{position:absolute;left:10px;right:10px;bottom:calc(11px + env(safe-area-inset-bottom,0px));pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:7px}#message{max-width:96%;background:#092333da;border:1px solid #b3d4ce5c;border-radius:13px;padding:9px 13px;font-size:12px;font-weight:750;text-align:center;min-width:220px;text-shadow:0 1px 2px #000}#guide{color:#f6ffbd;text-shadow:0 2px 5px #000;font-size:12px;letter-spacing:1.6px;font-weight:950;text-align:center}#next{pointer-events:auto;display:none;background:#dbf87c;color:#1c3024;border:1px solid #edffa3;min-width:170px}#next.show{display:block}#windBadge{position:absolute;right:12px;top:84px;background:#153b46ce;border:1px solid #b5e5ed77;border-radius:10px;padding:8px;font-size:11px;font-weight:750}#sunSpot{position:absolute;top:22%;right:18%;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:34px;color:#fff7a1;text-shadow:0 0 12px #fff;box-shadow:0 0 65px 35px #ffe2a28c;background:radial-gradient(circle,#fff 0%,#fff4b8 20%,#f1cb6588 53%,#e9aa3e00 72%);touch-action:none;user-select:none}#sunSpot[hidden]{display:none}#sunSpot.shaded{opacity:.22;box-shadow:0 0 15px 6px #ffec9c55}#sunHaze{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 77% 24%,#fff8d7ba 0%,#f9e6a07c 12%,transparent 44%);mix-blend-mode:screen}#sunHaze[hidden]{display:none}#sunHaze.shaded{opacity:.12}#catchUi{position:absolute;top:27%;left:7%;right:7%;padding:14px 9px;background:#082737e8;border:2px solid #e7ff83;border-radius:14px;text-align:center;font-weight:900;font-size:17px;text-shadow:0 1px 2px #000;animation:alertPulse 1s infinite}#catchUi[hidden]{display:none}#training{position:absolute;top:35%;left:8%;right:8%;text-align:center;pointer-events:none}#training[hidden]{display:none}#training strong{display:block;color:#edffa6;text-shadow:0 3px 9px #000;font-size:23px;letter-spacing:.3px}#training span{display:block;background:#102735d9;padding:10px;margin:9px auto;max-width:270px;border-radius:12px;font-size:14px;font-weight:700}#training .arrow{font-size:49px;color:#e8ff99;animation:floatUp 1s infinite alternate}@keyframes floatUp{to{transform:translateY(-20px)}}#skipTraining{position:absolute;top:calc(130px + env(safe-area-inset-top,0px));right:12px;z-index:12;font-size:11px}#skipTraining[hidden]{display:none}#drawer{position:absolute;inset:0;z-index:30;background:#061722ef;backdrop-filter:blur(15px);overflow:auto;padding:calc(14px + env(safe-area-inset-top,0px)) 18px calc(26px + env(safe-area-inset-bottom,0px));display:none}#drawer.open{display:block}#drawer header{display:flex;justify-content:space-between;align-items:center}#drawer h1{font-size:26px;margin:0;color:#efffa3;font-style:italic}#drawer h2{font-size:15px;color:#e7f6ae;margin:23px 0 9px;border-bottom:1px solid #b7d9d34a;padding-bottom:6px}#drawer p{font-size:12px;color:#c1d7df;line-height:1.55}#drawer .buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}#drawer .buttons button{min-height:48px}#drawer .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}#drawer label{font-size:11px;color:#c6e4e6;font-weight:750;display:flex;flex-direction:column;gap:5px}#drawer input:not([type=checkbox]),#drawer select,#drawer textarea{width:100%;min-width:0;border-radius:10px;border:1px solid #547d86;background:#102d3c;color:white;padding:10px;font:inherit}#drawer input[type=color]{height:45px;padding:3px}#drawer input[type=file]{font-size:11px}#drawer input[type=checkbox]{accent-color:#d8f582}#drawer .check{flex-direction:row;align-items:flex-start;font-size:11px;line-height:1.5}#drawer .muted{font-size:11px;color:#a5c2c9}#logoPreview{height:74px;width:74px;object-fit:contain;background:#314b54;border-radius:12px;border:1px solid #7d9d9b}#logoRow{display:flex;gap:14px;align-items:center}#logoInfo{font-size:11px;color:#c9e5e2}#status{position:absolute;top:calc(65px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:#082735e6;border:1px solid #e0ffa0;padding:8px 12px;border-radius:12px;font-size:12px;z-index:15;text-align:center;max-width:92%}#status[hidden]{display:none}#wipePanel{position:absolute;inset:0;z-index:25;display:none;align-items:center;justify-content:center;background:#071e2deb;backdrop-filter:blur(8px);padding:18px}#wipePanel.open{display:flex}#wipeCard{background:#143545;border:2px solid #d5f6a1;border-radius:22px;width:min(92vw,420px);padding:18px;text-align:center;box-shadow:0 20px 80px #000a}#wipeCard h2{margin:0 0 7px;color:#ecffa6;font-size:22px}#wipeCard p{margin:0 0 10px;color:#d2e6ec;font-size:12px}#wipeCanvas{width:100%;height:auto;max-height:260px;touch-action:none;border-radius:13px;background:linear-gradient(#244d5d,#0d2632)}#wipeTimer{font-size:29px;color:#e6ff9a;font-weight:1000;margin:7px}#wipeFeedback{font-size:12px;color:#d5e4e9}#wipeDone{display:none;margin:12px auto 0;width:100%}#bootError{position:absolute;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:#0b1b29f7;padding:22px}#bootError.open{display:flex}#bootError .inner{width:min(420px,100%);background:#173544;border:1px solid #e3d38a;border-radius:18px;padding:20px;box-shadow:0 20px 70px #000a}#bootError h2{margin:0 0 10px;color:#f6e49a}#bootError p{font-size:13px;line-height:1.55}#bootError code{font-size:10px;word-break:break-all;color:#f9c5a2}#bootError button{width:100%;margin-top:10px}#version{color:#8ca9b1;font-size:10px}#arcButton{position:relative}#arcButton::after{content:'COMING SOON';position:absolute;right:5px;top:3px;color:#ffe09c;font-size:8px}#arcButton{opacity:.58}
+</style></head><body><div id="app"><canvas id="game" aria-label="3D Australian football ground and interactive football"></canvas><canvas id="weatherFx"></canvas><div id="sunHaze" hidden></div><div id="sunSpot" hidden title="Hold to shade the sun">☀</div>
+<div id="top"><div id="brand">FOOTY FLICK<small id="renderMode">ORIGINAL FOOTBALL GAME · V0.14</small></div><div id="score"><span id="scoreValue">0 / 54</span><small id="shotCount">KICK 1 / 6</small></div><button id="menuButton">☰ MENU</button></div>
+<div id="meta"><span id="distance">DISTANCE · --m</span><span id="kickType">DROP PUNT</span><span id="venueLabel">STADIUM</span></div><div id="windBadge">WIND · --</div><div id="challenge" hidden>GROUND BALL REQUIRED</div>
+<div id="grassPatch"><b>🌱</b><small>SWIPE UP · CHECK WIND</small></div><div id="actions"><button id="grassButton">🌱 Toss grass</button><button id="wipeButton">💧 Wipe ball</button></div>
+<div id="catchUi" hidden>SWIPE LEFT OR RIGHT TO REACH THE BALL · +3</div><div id="training" hidden><strong id="trainingTitle">KICK THE FOOTBALL</strong><span id="trainingHint">Swipe up from the ball</span><div class="arrow">↑</div></div><button id="skipTraining" hidden>Skip tutorial</button>
+<div id="bottom"><div id="guide">FLICK UP FROM THE FOOTBALL</div><div id="message">Starting stadium…</div><button id="next">NEXT KICK</button></div><div id="status" hidden></div>
+<div id="wipePanel"><div id="wipeCard"><h2>DRY THE FOOTBALL</h2><p>Swipe quickly across the wet ball. You have two seconds.</p><canvas id="wipeCanvas" width="360" height="230"></canvas><div id="wipeTimer">2.0</div><div id="wipeFeedback">Swipe across the ball to start</div><button id="wipeDone" class="primary">BACK TO THE KICK</button></div></div>
+<div id="drawer"><header><h1>FOOTY FLICK</h1><button id="closeMenu">BACK TO GAME</button></header><p>Play on the field. Customize your team and conditions here.</p>
+<h2>GAME MODES</h2><div class="buttons"><button class="primary" id="tradButton">Traditional goal kicking</button><button id="arcButton" disabled>Arcade</button><button id="practiceButton">Practice</button><button id="tutorialButton">Interactive tutorial</button></div>
+<h2>GAME LENGTH & CONDITIONS</h2><div class="row"><label>Kicks per round<select id="lengthSelect"><option value="6">6 kicks</option><option value="8">8 kicks</option><option value="10">10 kicks</option><option value="12">12 kicks</option></select></label><label>Venue<select id="venueSelect"><option value="stadium">Major stadium</option><option value="local">Community oval</option><option value="park">Public park</option><option value="school">School ground</option></select></label></div><div class="row"><label>Weather<select id="weatherSelect"><option value="mixed">Mixed conditions</option><option value="dry">Fine</option><option value="wind">Windy</option><option value="rain">Rain</option><option value="glare">Low sun</option></select></label><label>Sound<select id="soundSelect"><option value="on">On</option><option value="off">Off</option></select></label></div><div class="buttons"><button id="newRound" class="primary">START NEW ROUND</button><button id="randomShot">NEW PRACTICE SHOT</button></div>
+<h2>YOUR TEAM</h2><div class="row"><label>Team name<input id="teamName" maxlength="28" placeholder="Your team"></label><label>Team logo<input id="teamLogo" type="file" accept="image/png,image/jpeg,image/webp"></label></div><label class="check"><input id="logoRights" type="checkbox"> I own this logo or have permission to use it. Uploaded logos stay on this device in this prototype.</label><div class="row"><label>Primary guernsey color<input id="primaryColor" type="color" value="#d4ac34"></label><label>Secondary color<input id="secondaryColor" type="color" value="#172a38"></label></div><div id="logoRow"><img id="logoPreview" alt="Your team logo preview"><div id="logoInfo">Upload a logo to suggest colors and, where supported, a team name. Check the suggestions before saving.</div></div><div class="buttons" style="margin-top:9px"><button id="saveTeam" class="primary">SAVE TEAM</button><button id="removeLogo">REMOVE LOGO</button></div>
+<h2>PROGRESS & ROADMAP</h2><p id="bestScore">Personal best: —</p><p>Arcade environments are being redesigned. Online invitations, remote multiplayer, full tournaments, authentic licensed audio and console-grade character animation are not yet ready.</p>
+<h2>LEGAL & CREDITS</h2><p>Original independent Australian rules kicking game. No affiliation with any football league, club or professional player. The stadium, fictional players and game graphics in this build are original procedural artwork. No external game engine, third-party images, music or audio downloads are used. Team logo rights remain the uploader's responsibility. Uploaded images are stored locally, not published or transmitted by this prototype. “Footy Flick” is a working title pending trademark clearance. This is not a commercial-release legal clearance.</p><p id="version">V0.14 · Single HTML file · Self-contained rendering · No network dependency</p><p id="graphicsStatus">Graphics: starting...</p></div>
+<div id="bootError"><div class="inner"><h2>Stadium couldn't start</h2><p>The game detected a graphics problem instead of leaving you on a blank loading screen.</p><code id="errorDetail"></code><button id="basicButton" class="primary">USE BASIC GRAPHICS</button><button id="retryButton">RETRY</button></div></div>
+</div>
+<script>
+// Independent watchdog: even a later script parse/runtime error must not leave a permanent loading screen.
+(function(){let fired=false;window.showFootyError=function(msg){fired=true;document.getElementById('errorDetail').textContent=String(msg||'Unknown startup issue');document.getElementById('bootError').classList.add('open')};window.addEventListener('error',e=>{if(!window.FOOTY_READY)window.showFootyError(e.message||'Script error')});window.addEventListener('unhandledrejection',e=>{if(!window.FOOTY_READY)window.showFootyError(String(e.reason))});setTimeout(()=>{if(!window.FOOTY_READY&&!fired)window.showFootyError('Startup timed out after 9 seconds')},9000)})();
+</script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let canvas=$('game');const fxCanvas=$('weatherFx'),fx=fxCanvas.getContext('2d');
+let gl=null,ctx2d=null,webglOK=false,graphicsError='';
+const COLORS={turf:[.26,.47,.24],white:[.94,.96,.92],goalpad:[.76,.17,.16],gold:[.88,.68,.21],dark:[.08,.18,.23],steel:[.33,.45,.49],roof:[.15,.23,.27],wood:[.37,.26,.19],leather:[.65,.19,.13],skin:[.78,.54,.38],hair:[.17,.11,.08],black:[.10,.13,.15]};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const rgb=h=>{const m=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h||'');return m?[parseInt(m[1],16)/255,parseInt(m[2],16)/255,parseInt(m[3],16)/255]:COLORS.gold};
+const V={add:(a,b)=>a.map((v,i)=>v+b[i]),sub:(a,b)=>a.map((v,i)=>v-b[i]),mul:(a,s)=>a.map(v=>v*s),len:a=>Math.hypot(...a),norm:a=>{let d=Math.hypot(...a)||1;return a.map(v=>v/d)},dot:(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]};
+function matI(){return [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}
+function matMul(a,b){const m=new Array(16).fill(0);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)m[c*4+r]+=a[k*4+r]*b[c*4+k];return m}
+function matTranslate(x,y,z){const m=matI();m[12]=x;m[13]=y;m[14]=z;return m}
+function matScale(x,y,z){const m=matI();m[0]=x;m[5]=y;m[10]=z;return m}
+function matRX(t){const m=matI(),c=Math.cos(t),s=Math.sin(t);m[5]=c;m[6]=s;m[9]=-s;m[10]=c;return m}
+function matRY(t){const m=matI(),c=Math.cos(t),s=Math.sin(t);m[0]=c;m[2]=-s;m[8]=s;m[10]=c;return m}
+function matRZ(t){const m=matI(),c=Math.cos(t),s=Math.sin(t);m[0]=c;m[1]=s;m[4]=-s;m[5]=c;return m}
+function model(x,y,z,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0){return matMul(matMul(matMul(matMul(matTranslate(x,y,z),matRZ(rz)),matRY(ry)),matRX(rx)),matScale(sx,sy,sz))}
+function perspective(fov,aspect,near,far){const f=1/Math.tan(fov/2),m=new Array(16).fill(0);m[0]=f/aspect;m[5]=f;m[10]=(far+near)/(near-far);m[11]=-1;m[14]=2*far*near/(near-far);return m}
+function lookAt(eye,at,up=[0,1,0]){const z=V.norm(V.sub(eye,at)),x=V.norm(V.cross(up,z)),y=V.cross(z,x);return [x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-V.dot(x,eye),-V.dot(y,eye),-V.dot(z,eye),1]}
+function transform(m,v){const [x,y,z,w=1]=v;return [m[0]*x+m[4]*y+m[8]*z+m[12]*w,m[1]*x+m[5]*y+m[9]*z+m[13]*w,m[2]*x+m[6]*y+m[10]*z+m[14]*w,m[3]*x+m[7]*y+m[11]*z+m[15]*w]}
+let camera={eye:[0,2,6],target:[0,2,-62],vp:matI()};
+function cameraUpdate(){const aspect=canvas.width/Math.max(1,canvas.height);camera.vp=matMul(perspective(70*Math.PI/180,aspect,.08,340),lookAt(camera.eye,camera.target))}
+function project(p){const r=transform(camera.vp,[...p,1]);if(r[3]<=.001)return null;return [(r[0]/r[3]+1)*canvas.clientWidth/2,(1-r[1]/r[3])*canvas.clientHeight/2,r[2]/r[3]]}
+let prog=null,ptsProg=null,uni={},geo={},crowdData=null,logoTexture=null;
+function compile(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error('Shader: '+gl.getShaderInfoLog(s));return s}
+function shader(vs,fs){const p=gl.createProgram();gl.attachShader(p,compile(gl.VERTEX_SHADER,vs));gl.attachShader(p,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error('Shader link: '+gl.getProgramInfoLog(p));return p}
+const vertexShader=`attribute vec3 aPos;attribute vec3 aNormal;attribute vec2 aUV;uniform mat4 uMVP;uniform mat4 uModel;uniform vec3 uEye;varying vec3 vNormal;varying vec3 vWorld;varying vec2 vUV;varying float vDist;void main(){vec4 world=uModel*vec4(aPos,1.);vWorld=world.xyz;vNormal=mat3(uModel)*aNormal;vUV=aUV;vDist=length(world.xyz-uEye);gl_Position=uMVP*vec4(aPos,1.);}`;
+const fragmentShader=`precision mediump float;uniform vec3 uColor;uniform float uGrass;uniform float uAlpha;uniform float uUseTex;uniform sampler2D uTex;varying vec3 vNormal;varying vec3 vWorld;varying vec2 vUV;varying float vDist;float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}void main(){vec3 n=normalize(vNormal);float lit=clamp(.57+.43*dot(n,normalize(vec3(-.4,.9,.55))),.3,1.);vec3 col=uColor*lit;if(uGrass>.5){float m=sin(vWorld.z*.40)*.042+sin(vWorld.x*2.1)*.016;float grain=hash(floor(vWorld.xz*10.))*.095;col*=.93+m+grain;}if(uUseTex>.5){vec4 t=texture2D(uTex,vUV);col=mix(col,t.rgb,t.a);};float fog=clamp((vDist-80.)/140.,0.,.75);col=mix(col,vec3(.67,.79,.79),fog);gl_FragColor=vec4(col,uAlpha);}`;
+const pointVertex=`attribute vec3 aPos;attribute vec3 aColor;uniform mat4 uVP;uniform vec3 uEye;varying vec3 vColor;void main(){vec4 p=uVP*vec4(aPos,1.);gl_Position=p;float d=length(aPos-uEye);gl_PointSize=clamp(135.0/d,1.2,4.5);vColor=aColor;}`;
+const pointFragment=`precision mediump float;varying vec3 vColor;void main(){vec2 q=gl_PointCoord-.5;if(dot(q,q)>.25)discard;gl_FragColor=vec4(vColor,1.);}`;
+function createGeo(v,n,uv,idx){const g={count:idx.length};g.pos=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,g.pos);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(v),gl.STATIC_DRAW);g.normal=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,g.normal);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(n),gl.STATIC_DRAW);g.uv=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,g.uv);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(uv),gl.STATIC_DRAW);g.idx=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,g.idx);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(idx),gl.STATIC_DRAW);return g}
+function geoBox(){const v=[],n=[],uv=[],idx=[];const faces=[[[0,0,1],[[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]]],[[0,0,-1],[[1,-1,-1],[-1,-1,-1],[-1,1,-1],[1,1,-1]]],[[1,0,0],[[1,-1,1],[1,-1,-1],[1,1,-1],[1,1,1]]],[[-1,0,0],[[-1,-1,-1],[-1,-1,1],[-1,1,1],[-1,1,-1]]],[[0,1,0],[[-1,1,1],[1,1,1],[1,1,-1],[-1,1,-1]]],[[0,-1,0],[[-1,-1,-1],[1,-1,-1],[1,-1,1],[-1,-1,1]]]];for(const [norm,verts] of faces){let k=v.length/3;verts.forEach((p,i)=>{v.push(...p.map(x=>x*.5));n.push(...norm);uv.push([0,1,1,0][i],[0,0,1,1][i])});idx.push(k,k+1,k+2,k,k+2,k+3)}return createGeo(v,n,uv,idx)}
+function geoSphere(rings=12,segments=20){let v=[],n=[],uv=[],idx=[];for(let j=0;j<=rings;j++){let th=Math.PI*j/rings;for(let i=0;i<=segments;i++){let ph=i*2*Math.PI/segments,x=Math.sin(th)*Math.cos(ph),y=Math.cos(th),z=Math.sin(th)*Math.sin(ph);v.push(x,y,z);n.push(x,y,z);uv.push(i/segments,1-j/rings)}}for(let j=0;j<rings;j++)for(let i=0;i<segments;i++){let a=j*(segments+1)+i,b=a+segments+1;idx.push(a,b,a+1,b,b+1,a+1)}return createGeo(v,n,uv,idx)}
+function geoCylinder(segments=14){let v=[],n=[],uv=[],idx=[];for(let j=0;j<=1;j++)for(let i=0;i<=segments;i++){let a=2*Math.PI*i/segments,x=Math.cos(a),z=Math.sin(a);v.push(x,j-.5,z);n.push(x,0,z);uv.push(i/segments,j)}for(let i=0;i<segments;i++){let a=i,b=i+segments+1;idx.push(a,b,a+1,b,b+1,a+1)}for(let j=0;j<2;j++){let k=v.length/3,y=j-.5;v.push(0,y,0);n.push(0,j?1:-1,0);uv.push(.5,.5);for(let i=0;i<=segments;i++){let a=2*Math.PI*i/segments;v.push(Math.cos(a),y,Math.sin(a));n.push(0,j?1:-1,0);uv.push((Math.cos(a)+1)/2,(Math.sin(a)+1)/2)}for(let i=0;i<segments;i++)j?idx.push(k,k+i+1,k+i+2):idx.push(k,k+i+2,k+i+1)}return createGeo(v,n,uv,idx)}
+function geoPlane(){return createGeo([-.5,0,-.5,.5,0,-.5,.5,0,.5,-.5,0,.5],[0,1,0,0,1,0,0,1,0,0,1,0],[0,0,1,0,1,1,0,1],[0,1,2,0,2,3])}
+function geoQuad(){return createGeo([-.5,-.5,0,.5,-.5,0,.5,.5,0,-.5,.5,0],[0,0,1,0,0,1,0,0,1,0,0,1],[0,1,1,1,1,0,0,0],[0,1,2,0,2,3])}
+function initWebGL(){gl=canvas.getContext('webgl',{alpha:true,antialias:true,depth:true,premultipliedAlpha:false,failIfMajorPerformanceCaveat:false});if(!gl)throw Error('WebGL unavailable on this device');prog=shader(vertexShader,fragmentShader);ptsProg=shader(pointVertex,pointFragment);gl.useProgram(prog);for(const key of ['uMVP','uModel','uEye','uColor','uGrass','uAlpha','uUseTex','uTex'])uni[key]=gl.getUniformLocation(prog,key);geo={box:geoBox(),sphere:geoSphere(),cyl:geoCylinder(),plane:geoPlane(),quad:geoQuad()};gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);webglOK=true;buildCrowd();refreshLogoTexture()}
+function drawG(g,m,color,grass=false,alpha=1,tex=false){gl.useProgram(prog);const loc=(name)=>gl.getAttribLocation(prog,name);gl.bindBuffer(gl.ARRAY_BUFFER,g.pos);let a=loc('aPos');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ARRAY_BUFFER,g.normal);a=loc('aNormal');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ARRAY_BUFFER,g.uv);a=loc('aUV');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,g.idx);gl.uniformMatrix4fv(uni.uMVP,false,new Float32Array(matMul(camera.vp,m)));gl.uniformMatrix4fv(uni.uModel,false,new Float32Array(m));gl.uniform3fv(uni.uEye,new Float32Array(camera.eye));gl.uniform3fv(uni.uColor,new Float32Array(color));gl.uniform1f(uni.uGrass,grass?1:0);gl.uniform1f(uni.uAlpha,alpha);gl.uniform1f(uni.uUseTex,tex?1:0);if(tex&&logoTexture){gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,logoTexture);gl.uniform1i(uni.uTex,0)}gl.depthMask(alpha>.99);gl.drawElements(gl.TRIANGLES,g.count,gl.UNSIGNED_SHORT,0);gl.depthMask(true)}
+function draw(kind,color,x,y,z,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,grass=false,alpha=1){drawG(geo[kind],model(x,y,z,sx,sy,sz,rx,ry,rz),color,grass,alpha)}
+function segment(a,b,r,color){const d=V.sub(b,a),len=V.len(d),mid=V.mul(V.add(a,b),.5);let ry=0,rz=-Math.atan2(d[0],d[1]);let rx=Math.atan2(d[2],Math.hypot(d[0],d[1]));draw('cyl',color,...mid,r,len,r,rx,ry,rz)}
+function addCrowdPoint(out,x,y,z){const palette=[[.93,.72,.27],[.74,.17,.16],[.11,.23,.42],[.91,.89,.8],[.24,.55,.65],[.31,.3,.34],[.92,.53,.23]];out.pos.push(x,y,z);out.col.push(...palette[Math.floor(Math.random()*palette.length)])}
+function buildCrowd(){if(!gl)return;if(crowdData){gl.deleteBuffer(crowdData.pos);gl.deleteBuffer(crowdData.col)}const data={pos:[],col:[]},stad=venue==='stadium';if(stad){for(let row=0;row<24;row++)for(let col=0;col<118;col++){let x=(col-59)*.55+rnd(-.17,.17),y=2+row*.55,z=-75-row*.52;addCrowdPoint(data,x,y,z)}for(let side of [-1,1])for(let row=0;row<15;row++)for(let col=0;col<150;col++){let z=-75+col*.83,y=2+row*.59,x=side*(51+row*.65);addCrowdPoint(data,x,y,z)}}else{for(let row=0;row<5;row++)for(let col=0;col<70;col++){let x=(col-35)*.56,y=.7+row*.48,z=-78-row*.9;addCrowdPoint(data,x,y,z)}for(let i=0;i<120;i++)addCrowdPoint(data,rnd(-26,26),rnd(.9,1.9),rnd(-76,-73))}crowdData={count:data.pos.length/3};crowdData.pos=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,crowdData.pos);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data.pos),gl.STATIC_DRAW);crowdData.col=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,crowdData.col);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data.col),gl.STATIC_DRAW)}
+function drawCrowd(){if(!crowdData)return;gl.useProgram(ptsProg);let p=gl.getAttribLocation(ptsProg,'aPos'),c=gl.getAttribLocation(ptsProg,'aColor');gl.bindBuffer(gl.ARRAY_BUFFER,crowdData.pos);gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,3,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ARRAY_BUFFER,crowdData.col);gl.enableVertexAttribArray(c);gl.vertexAttribPointer(c,3,gl.FLOAT,false,0,0);gl.uniformMatrix4fv(gl.getUniformLocation(ptsProg,'uVP'),false,new Float32Array(camera.vp));gl.uniform3fv(gl.getUniformLocation(ptsProg,'uEye'),new Float32Array(camera.eye));gl.drawArrays(gl.POINTS,0,crowdData.count)}
+function drawTree(x,z,size=1){draw('cyl',COLORS.wood,x,2.2*size,z,.28*size,4.4*size,.28*size);for(let i=0;i<3;i++)draw('sphere',i===1?[.19,.38,.21]:[.23,.44,.23],x+(i-1)*1.3*size,4.6*size+(i%2)*.55*size,z,.95*size,1.5*size,.95*size)}
+function drawVenue(){draw('plane',COLORS.turf,0,-.035,-42,158,1,178,0,0,0,true);for(let i=0;i<6;i++){let z=-11-i*14;draw('box',[.75,.83,.70],0,.007,z,85,.014,.065)}for(let x of [-26,26])draw('box',COLORS.white,x,.015,-41,.08,.02,90);draw('box',COLORS.white,0,.015,-62,48,.02,.085);for(let x of [-3.2,3.2,-9.6,9.6]){const tall=Math.abs(x)<4;draw('cyl',COLORS.white,x,(tall?10:6.7)/2,-62,.095,tall?10:6.7,.095);draw('cyl',COLORS.goalpad,x,.62,-62,.26,1.25,.26)}for(let x of [-3.2,3.2])draw('box',COLORS.white,x,.08,-62,.4,.02,.4);if(venue==='stadium'){draw('box',COLORS.roof,0,2.3,-80,74,4.6,1.2);for(let row=0;row<5;row++)draw('box',row%2?[.28,.34,.39]:[.23,.30,.35],0,2.4+row*2.3,-78-row*2.5,74,2.3,4.3);draw('box',COLORS.roof,0,17.7,-89,83,.65,17);for(let side of [-1,1]){draw('box',COLORS.roof,side*58,3,-7,2,6,143);for(let row=0;row<4;row++)draw('box',row%2?[.23,.31,.37]:[.28,.37,.41],side*(54+row*2),3.2+row*2.5,-9,6,2.5,145);draw('box',COLORS.roof,side*61,15,-9,20,.65,145)}for(let x of [-30,30]){draw('cyl',COLORS.steel,x,10,-80,.32,20,.32);draw('box',[.96,.91,.70],x,20,-80,4,.7,1.2)}}else{draw('box',[.35,.40,.43],0,1.0,-83,45,2.1,2.8);draw('box',COLORS.roof,0,4.2,-85,52,.55,8);for(let x of [-24,24])draw('cyl',COLORS.steel,x,3.1,-82,.22,6,.22);for(let i=0;i<5;i++)drawTree(-37+i*17,-88,1.1);if(venue==='school'){draw('box',[.76,.65,.43],-46,4,-93,31,8,12);for(let i=0;i<7;i++)draw('box',[.22,.35,.42],-60+i*4.2,4.6,-86.8,2,2.6,.09)}if(venue==='park'){for(let i=0;i<6;i++)drawTree((i-3)*18,-90-rnd(0,10),1.4)}}drawCrowd();for(let x of [-13,13])draw('box',[.14,.25,.34],x,1.15,-76,14,2.3,.4);}
+function drawPlayer(x,z,behind=false,bend=0,run=0){const c=team.primary,trim=team.secondary,bodyY=behind?1.12:1.13;const sway=Math.sin(run*13)*.15;draw('sphere',COLORS.black,x,.012,z,.42,.035,.25,0,0,0,false,.30);draw('box',trim,x,bodyY,z,.75,.82,.36,0,0,sway*.3);draw('box',c,x,bodyY+.13,z+.006,.78,.56,.39,0,0,sway*.2);draw('box',trim,x,bodyY-.43,z,.74,.28,.4);draw('sphere',COLORS.skin,x,bodyY+.65-bend*.12,z+.01,.26,.29,.26);draw('sphere',COLORS.hair,x,bodyY+.84-bend*.12,z-.04,.275,.12,.26);for(let s of [-1,1]){segment([x+s*.49,bodyY+.33,z],[x+s*.57,bodyY-.20+(s*sway),z+.15],.11,COLORS.skin);segment([x+s*.22,bodyY-.55,z],[x+s*(.22+.07*Math.sin(run*12)),.23+Math.abs(sway)*.4,z+.10],.14,COLORS.skin);draw('box',trim,x+s*.22,.23,z+.12,.19,.33,.22);draw('box',COLORS.black,x+s*.22,.065,z+.24,.23,.13,.42)}if(logoTexture){let m=model(x,bodyY+.15,z+.205,.43,.45,1);drawG(geo.quad,m,[1,1,1],false,1,true)}}
+function drawBall(){if(!ball.visible)return;const x=ball.x,y=ball.y,z=ball.z,rx=ball.pitch,rz=ball.lean;const base=model(x,y,z,.34,.55,.34,rx,0,rz);drawG(geo.sphere,base,COLORS.leather);const laces=matMul(model(x,y,z,1,1,1,rx,0,rz),matI());for(let i=-2;i<=2;i++){const bar=matMul(laces,model(0,i*.073,.332,.18,.018,.02));drawG(geo.box,bar,[.98,.92,.76])}drawG(geo.box,matMul(laces,model(0,0,.334,.026,.44,.02)),[.95,.90,.75]);draw('sphere',[.05,.12,.07],x,.02,z,.46,.018,.50,0,0,0,false,.23)}
+function drawCatchMarker(){if(!catchMode.active)return;draw('cyl',[.89,.98,.30],catchMode.targetX,.02,-71,.95,.03,.95);draw('cyl',[.22,.49,.28],catchMode.targetX,.045,-71,.7,.035,.7)}
+function renderGL(){if(gl.isContextLost())throw Error('WebGL graphics context lost');gl.viewport(0,0,canvas.width,canvas.height);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);cameraUpdate();drawVenue();drawCatchMarker();drawPlayer(startX-1.0,startZ+1.15,false,grassToss.bend,flight?flight.t:0);drawPlayer(catcher.x,-71,true,0,catcher.run);drawBall()}
+function renderFallback(){
+const g=ctx2d,w=canvas.clientWidth,h=canvas.clientHeight;g.clearRect(0,0,w,h);
+const sky=g.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#7fa6c1');sky.addColorStop(.36,weather==='glare'?'#f6d4a1':'#b5c8ce');sky.addColorStop(.51,'#728b78');sky.addColorStop(1,'#1a4a30');g.fillStyle=sky;g.fillRect(0,0,w,h);
+// Layered, close-to-the-goals seating rather than a distant flat wall.
+const sy=h*.32,seatBottom=h*.515;g.fillStyle='#142b36';g.fillRect(0,sy-25,w,22);g.fillStyle='#34444c';g.fillRect(0,sy,w,seatBottom-sy);for(let row=0;row<11;row++){let y=sy+row*(seatBottom-sy)/11;g.fillStyle=row%2?'#253640':'#34464b';g.fillRect(0,y,w,5);for(let i=0;i<46;i++){let x=(i*41+row*19)%w;g.fillStyle=['#c4c5bc','#d29c36','#a74834','#4985a1','#c1a99a'][((i*7+row*3)%5)];g.beginPath();g.arc(x,y+2.5,2.2,0,Math.PI*2);g.fill()}}g.fillStyle='#102b36';g.fillRect(0,seatBottom-8,w,10);g.fillStyle='#24415a';g.fillRect(0,seatBottom+2,w,14);g.fillStyle='#d3e0de';g.font='bold 10px system-ui';for(let i=0;i<4;i++)g.fillText('FOOTY FLICK',i*135+5,seatBottom+12);
+// Turf perspective with mown stripes and boundary line.
+const horizon=seatBottom+15;g.fillStyle='#346c3b';g.beginPath();g.moveTo(0,h);g.lineTo(w,h);g.lineTo(w*.72,horizon);g.lineTo(w*.28,horizon);g.fill();for(let i=0;i<10;i++){let f=i/10,y=horizon+(h-horizon)*f*f;g.fillStyle=i%2?'#397a40':'#2e6837';g.beginPath();g.moveTo(w*(.28-(.28*f)),y);g.lineTo(w*(.72+.28*f),y);let nf=(i+1)/10,ny=horizon+(h-horizon)*nf*nf;g.lineTo(w*(.72+.28*nf),ny);g.lineTo(w*(.28-.28*nf),ny);g.fill()}g.strokeStyle='#e4e9dbb0';g.lineWidth=1.2;g.beginPath();g.moveTo(w*.05,h*.76);g.lineTo(w*.32,horizon);g.moveTo(w*.95,h*.76);g.lineTo(w*.68,horizon);g.stroke();
+// Floodlights and goal structure, with red post pads.
+for(let side of [0,w]){let x=side===0?28:w-28;g.strokeStyle='#6c777b';g.lineWidth=5;g.beginPath();g.moveTo(x,sy+16);g.lineTo(x,sy-118);g.stroke();g.fillStyle='#d5e5df';g.fillRect(x-26,sy-126,52,17);for(let i=0;i<6;i++){g.fillStyle='#fff6b5';g.fillRect(x-22+i*8,sy-122,5,7)}}
+for(let [idx,x] of [-9.6,-3.2,3.2,9.6].entries()){let b=project([x,0,GOALZ]),t=project([x,idx===1||idx===2?10:6.7,GOALZ]);if(!b||!t)continue;g.strokeStyle='#f9f8ec';g.lineWidth=idx===1||idx===2?4.8:3.5;g.beginPath();g.moveTo(b[0],b[1]);g.lineTo(t[0],t[1]);g.stroke();g.strokeStyle='#c42b2c';g.lineWidth=7;g.beginPath();g.moveTo(b[0],b[1]);g.lineTo(b[0],lerp(b[1],t[1],.16));g.stroke()}
+function person(x,z,catching){let a=project([x,0,z]),b=project([x,2.05,z]);if(!a||!b)return;let size=clamp(a[1]-b[1],15,145),cx=a[0],foot=a[1],bw=size*.30;g.fillStyle='#0a1c22a0';g.beginPath();g.ellipse(cx,foot,bw*.75,4,0,0,Math.PI*2);g.fill();g.fillStyle=team.secondaryHex;g.fillRect(cx-bw*.5,foot-size*.58,bw,size*.34);g.fillStyle=team.primaryHex;g.fillRect(cx-bw*.57,foot-size*.75,bw*1.14,size*.34);g.fillStyle='#c89472';g.beginPath();g.arc(cx,foot-size*.88,size*.11,0,Math.PI*2);g.fill();g.strokeStyle='#b78561';g.lineWidth=size*.095;g.beginPath();g.moveTo(cx-bw*.62,foot-size*.68);g.lineTo(cx-bw*.84,foot-size*.43);g.moveTo(cx+bw*.62,foot-size*.68);g.lineTo(cx+bw*.84,foot-size*.43);g.stroke();g.strokeStyle='#b18b65';g.lineWidth=size*.10;g.beginPath();g.moveTo(cx-bw*.28,foot-size*.32);g.lineTo(cx-bw*.28,foot-size*.05);g.moveTo(cx+bw*.28,foot-size*.32);g.lineTo(cx+bw*.28,foot-size*.05);g.stroke();g.fillStyle='#fff';g.textAlign='center';g.font=`900 ${Math.max(9,size*.15)}px system-ui`;g.fillText(catching?'7':'23',cx,foot-size*.56);g.textAlign='start'}
+person(startX-1.0,startZ+1.15,false);person(catcher.x,-71,true);
+let bp=project([ball.x,ball.y,ball.z]);if(bp){const sc=clamp(1/(bp[2]+.2)*.02, .6,2);g.save();g.translate(bp[0],bp[1]);g.rotate(ball.pitch);g.fillStyle='#b94332';g.beginPath();g.ellipse(0,0,13*sc,22*sc,0,0,Math.PI*2);g.fill();g.strokeStyle='#edcbb1';g.lineWidth=2*sc;g.beginPath();g.moveTo(-7*sc,0);g.lineTo(7*sc,0);g.stroke();g.restore()}
+} 
+function refreshLogoTexture(){if(!gl)return;const c=document.createElement('canvas');c.width=256;c.height=256;const g=c.getContext('2d');g.fillStyle=team.secondaryHex;g.fillRect(0,0,256,256);g.fillStyle='#ffffff';g.textAlign='center';g.font='900 35px sans-serif';g.fillText(team.name.slice(0,11).toUpperCase(),128,238);g.font='900 88px sans-serif';g.fillText('23',128,142);const upload=team.image;if(upload){const im=new Image();im.onload=()=>{g.drawImage(im,80,12,96,96);uploadTex(c)};im.src=upload}else uploadTex(c)}
+function uploadTex(c){if(!gl)return;if(logoTexture)gl.deleteTexture(logoTexture);logoTexture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,logoTexture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE)}
+const GOALZ=-62;
+let venue='stadium',weather='dry',weatherSetting='mixed',gameLength=6,mode='trad',practice=false,shotIndex=0,score=0,roundSeed=0,ready=false,done=false,shot=null,flight=null,swipe=null,slow=1,animationId=null;
+let startX=0,startZ=0,windX=0,slipRisk=.16,preparedDryness=0,grassToss={active:false,bend:0,t:0,particles:[]};
+let ball={x:0,y:1.15,z:0,pitch:0,lean:0,visible:true},catcher={x:0,targetX:0,run:0};
+let catchMode={active:false,swiped:false,targetX:0,finished:false};
+let training={active:false,step:0},rain={open:false,started:false,ends:0,dryness:0,last:null,finished:false},soundOn=true,audio=null;
+let team={name:'YOUR CLUB',primaryHex:'#d4ac34',secondaryHex:'#172a38',primary:rgb('#d4ac34'),secondary:rgb('#172a38'),image:null};
+let lastTime=0,clock=0,statusTimer=null,gestureTrail=[],ballScreen=[0,0];
+const shots=[{d:22,x:0},{d:39,x:-10},{d:54,x:13},{d:12,x:11,ground:true},{d:59,x:-17},{d:34,x:9},{d:47,x:-6},{d:10,x:-12,ground:true},{d:27,x:15},{d:18,x:-17,curve:true},{d:52,x:0},{d:41,x:18}];
+function showStatus(s,seconds=2.8){$('status').textContent=s;$('status').hidden=false;clearTimeout(statusTimer);statusTimer=setTimeout(()=>$('status').hidden=true,seconds*1000)}
+function setMessage(s){$('message').textContent=s}
+function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k,d){try{return localStorage.getItem(k)??d}catch(e){return d}}
+function chooseShot(){let raw=shots[(shotIndex+roundSeed)%shots.length];if(shotIndex>=shots.length){raw={d:clamp(raw.d+rnd(-9,9),8,61),x:raw.x+rnd(-4,4),ground:raw.ground,curve:raw.curve}}let d=raw.d,x=raw.x;const angle=Math.abs(Math.atan2(x,d)*180/Math.PI);let ground=!!raw.ground&&d<=16&&angle>=30;let technique=ground?'GROUND DRIBBLER':d<=26&&angle>=31?(x>0?'SNAP':'BANANA'):'DROP PUNT';if(training.active){if(training.step===0){d=24;x=0;ground=false;technique='DROP PUNT'}if(training.step===1){d=11;x=12;ground=true;technique='GROUND DRIBBLER'}}if(weatherSetting==='mixed')weather=['dry','wind','rain','glare','dry','wind'][((shotIndex+roundSeed)%6)];else weather=weatherSetting;
+windX=weather==='wind'?rnd(-8,8):weather==='dry'?rnd(-2,2):rnd(-5,5);if(Math.abs(windX)<.8)windX=windX<0?-1.4:1.4;
+shot={d,x,ground,technique,angle,wind:windX,weather};startX=x;startZ=GOALZ+d;ball={x:startX,y:1.13,z:startZ,pitch:technique==='DROP PUNT'||ground?0:(x>0?-.88:.88),lean:0,visible:true};catcher.x=0;catcher.targetX=0;catcher.run=0;catchMode={active:false,swiped:false,targetX:0,finished:false};flight=null;done=false;swipe=null;gestureTrail=[];preparedDryness=0;slipRisk=weather==='rain'?.23:.015;grassToss.active=false;grassToss.bend=0;grassToss.particles=[];$('next').classList.remove('show');$('guide').textContent=ground?'GROUND BALL · ARC YOUR FLICK':'FLICK UP FROM THE FOOTBALL';$('distance').textContent=`DISTANCE · ${Math.round(d)}m · ${Math.round(angle)}°`;$('kickType').textContent=technique;$('venueLabel').textContent={stadium:'MAJOR STADIUM',local:'COMMUNITY OVAL',park:'PUBLIC PARK',school:'SCHOOL GROUND'}[venue];$('windBadge').textContent=`WIND ${windX<0?'←':'→'} ${Math.abs(windX).toFixed(1)} m/s · ${weather==='rain'?'RAIN':weather==='glare'?'LOW SUN':weather==='wind'?'GUSTY':'FINE'}`;$('scoreValue').textContent=`${score} / ${gameLength*9}`;$('shotCount').textContent=`KICK ${Math.min(shotIndex+1,gameLength)} / ${gameLength}`;$('challenge').hidden=!ground;$('grassPatch').hidden=training.active&&training.step!==2;$('wipeButton').style.display=(weather==='rain'||(training.active&&training.step===3))?'':'none';$('grassButton').style.display=(training.active&&training.step!==2)?'none':'';$('sunSpot').hidden=weather!=='glare';$('sunHaze').hidden=weather!=='glare';$('sunSpot').classList.remove('shaded');$('sunHaze').classList.remove('shaded');$('catchUi').hidden=true;
+const eye=[startX*.90,3.2,startZ+12],at=[startX*.55,1.8,GOALZ];camera.eye=eye;camera.target=at;cameraUpdate();setMessage(training.active?'PRACTICE SHOT — TRY THE GESTURE':'READY · SWIPE TO KICK');if(training.active)renderTraining();updateBest()}
+function updateBest(){let best=load('ffBest_'+gameLength,'—');$('bestScore').textContent=`Personal best (${gameLength} kicks): ${best}`}
+function startRound({practiceMode=false}={}){practice=practiceMode;mode='trad';shotIndex=0;score=0;roundSeed=(roundSeed+Math.floor(rnd(1,11)))%shots.length;training.active=false;$('training').hidden=true;$('skipTraining').hidden=true;chooseShot();closeDrawer();showStatus(practice?'Practice mode':'New round · Good luck!',2)}
+function nextShot(){if(!done&&flight)return;if(training.active){advanceTraining();return}if(!practice)shotIndex++;if(shotIndex>=gameLength){let total=score;startRound({practiceMode:false});showStatus(`Previous round: ${total} points · New round started`,4)}else chooseShot()}
+function recordScore(points){if(!flight||flight.scored!==null)return;flight.scored=points;flight.scoreAt=flight.t;setMessage(points===6?'GOAL!':points===1?'BEHIND · +1':'MISS · 0');sound(points===6?'goal':points===1?'behind':'miss')}
+function finishShot(){if(done||!flight)return;done=true;let pts=(flight.scored||0)+(flight.bonus||0);if(!training.active&&!practice){score+=pts;if(shotIndex===gameLength-1){let k='ffBest_'+gameLength;save(k,String(Math.max(Number(load(k,'0')),score)))}}$('scoreValue').textContent=`${score} / ${gameLength*9}`;setMessage(pts===9?'GOAL + MARK! · 9 POINTS':pts===6?'GOAL! · 6 POINTS':pts===1?'BEHIND · 1 POINT':'MISS · 0 POINTS');$('guide').textContent=training.active?'TUTORIAL COMPLETE — NEXT LESSON':shotIndex===gameLength-1?'ROUND COMPLETE':'READY FOR NEXT KICK';$('next').textContent=training.active?'NEXT LESSON':shotIndex===gameLength-1?'NEW ROUND':'NEXT KICK';$('next').classList.add('show');if(training.active)setTimeout(()=>{if(training.active&&done)advanceTraining()},1400);updateBest()}
+function startKick(info){if(!shot||flight||done||rain.open)return;const power=clamp(info.power,.18,1),angleAdjust=clamp(info.dx,-.33,.33),curve=clamp(info.curve,-1,1);let aim=Math.atan2(-startX,shot.d)+angleAdjust*.9;let speed=12+power*31,vy=3.8+power*10.7;
+if(shot.ground){speed=8.5+power*16.0;vy=.12+power*.95;ball.y=.43}else if(shot.technique!=='DROP PUNT'){speed=11+power*23;vy=2.2+power*8.7}
+if(weather==='rain'&&Math.random()<slipRisk){speed*=rnd(.88,.97);aim+=rnd(-.07,.07);showStatus('Wet-ball mishit · slightly reduced distance',2.5)}
+flight={x:ball.x,y:ball.y,z:ball.z,vx:Math.sin(aim)*speed,vy,vz:-Math.cos(aim)*speed,spin:curve,t:0,scored:null,scoreAt:0,bonus:0,bounced:false,stopped:false,goalCrossed:false};ball.pitch=shot.technique==='DROP PUNT'||shot.ground?0:(startX>0?-.9:.9);$('challenge').hidden=true;$('guide').textContent='FOLLOW THE FLIGHT';setMessage(`KICK AWAY · ${Math.round(power*100)}% POWER`);sound('kick')}
+function beginCatch(f){if(catchMode.active||catchMode.finished||training.active||venue==='stadium'||f.scored!==null||f.vz>=-2)return;let t=(GOALZ-f.z)/f.vz;if(t<.12||t>1.3)return;let px=f.x+f.vx*t+.5*(f.spin*3.4+windX*.38)*t*t;let py=f.y+f.vy*t-4.905*t*t;if(Math.abs(px)>3.05||py<.8||py>10.5)return;const tm=(-71-f.z)/f.vz;const landingX=f.x+f.vx*tm+.5*(f.spin*3.4+windX*.38)*tm*tm;catchMode.active=true;catchMode.targetX=clamp(landingX,-6,6);catchMode.swiped=false;catcher.targetX=catcher.x;$('catchUi').hidden=false;$('guide').textContent='CONTROL THE CATCHER · SWIPE TOWARD THE LANDING CIRCLE';sound('whistle')}
+function simulate(dt,now){clock+=dt;if(grassToss.active){grassToss.t+=dt;grassToss.bend=Math.sin(Math.min(1,grassToss.t/.75)*Math.PI)*.48;if(grassToss.t>2.1){grassToss.active=false;grassToss.bend=0}}for(let p of grassToss.particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=32*dt;p.life-=dt}grassToss.particles=grassToss.particles.filter(p=>p.life>0);
+if(!flight||done)return;const f=flight,oldZ=f.z,oldX=f.x,oldY=f.y;let step=dt*(catchMode.active?.48:1);f.t+=step;
+if(!f.goalCrossed)beginCatch(f);
+if(catchMode.active){let dx=catcher.targetX-catcher.x;catcher.x+=clamp(dx,-6.6*dt,6.6*dt);catcher.run+=dt;}
+let airborne=f.y>.21||f.vy>.25;let spinAccel=shot.ground&&f.bounced?-5.7:3.3;f.vx+=(f.spin*spinAccel+(airborne?windX*.35:0))*step;f.vy-=9.81*step;f.x+=f.vx*step;f.y+=f.vy*step;f.z+=f.vz*step;
+if(f.y<.21){if(!f.bounced){f.bounced=true;sound('bounce')}f.y=.21;f.vy=Math.abs(f.vy)*(shot.ground?.31:.46);f.vz*=shot.ground?.98:.79;f.vx*=.95;if(f.vy<.65)f.vy=0}if(f.y<=.211){f.vz*=Math.exp(-(shot.ground?.35:.60)*step);f.vx*=Math.exp(-.55*step)}
+ball.x=f.x;ball.y=f.y;ball.z=f.z;ball.pitch+=(shot.ground?-1:1)*Math.min(34,Math.hypot(f.vx,f.vz)/.25)*step;ball.lean=shot.technique==='DROP PUNT'?clamp(windX*.015,-.22,.22):clamp((startX>0?-.85:.85)+f.spin*.17,-1.1,1.1);
+if(!f.goalCrossed&&oldZ>GOALZ&&f.z<=GOALZ){f.goalCrossed=true;let a=(GOALZ-oldZ)/(f.z-oldZ),x=oldX+(f.x-oldX)*a,y=oldY+(f.y-oldY)*a;recordScore(y>.2&&y<10.5?(Math.abs(x)<3.15?6:Math.abs(x)<9.5?1:0):0);if(f.scored!==6){catchMode.active=false;$('catchUi').hidden=true}}
+if(f.scored===6&&!f.markResolved&&f.z<=-71){f.markResolved=true;let close=Math.abs(f.x-catcher.x)<(weather==='rain'?.66:1.35),height=f.y>1.0&&f.y<3.9,power=Math.hypot(f.vx,f.vz)>9;let eligible=venue!=='stadium'&&catchMode.swiped&&close&&height&&power;if(eligible&&Math.random()>(weather==='rain'?.27:.04)){f.bonus=3;setMessage('GOAL + TEAMMATE MARK! · +3 BONUS');sound('mark')}else if(venue!=='stadium')setMessage('GOAL · CATCHER MISSED · 6 POINTS');catchMode.active=false;catchMode.finished=true;$('catchUi').hidden=true}
+// A physical boundary at the front of the stand prevents travelling into a second grandstand.
+const standZ=venue==='stadium'?-75:-83;if(f.z<standZ){f.z=standZ;f.vz=Math.max(.05,-f.vz*.04);f.vy=Math.min(f.vy,-1.8);f.vx*=.25;f.stopped=true;ball.z=f.z}
+if(f.scored===null&&(f.t>12||Math.abs(f.x)>80||Math.hypot(f.vx,f.vz)<.2||f.z<standZ+.1))recordScore(0);
+if(f.scored!==null&&(f.t-f.scoreAt>2.4||f.stopped&&f.t-f.scoreAt>.8))finishShot();}
+function updateCamera(dt){if(!shot)return;let eye,target;if(catchMode.active){eye=[catcher.x*.25,3.5,-80];target=[catcher.x*.25,2.2,-63]}else if(flight&&flight.t>.65){eye=[ball.x+1.5,Math.max(2.6,ball.y+2.7),Math.max(-72,ball.z+8)];target=[ball.x*.55,Math.max(1.5,ball.y*.7),ball.z-10]}else{eye=[startX*.90,3.2,startZ+12];target=[startX*.55,1.8,GOALZ]}
+const s=clamp(dt*(catchMode.active?5:flight?2.4:6),0,1);camera.eye=camera.eye.map((v,i)=>lerp(v,eye[i],s));camera.target=camera.target.map((v,i)=>lerp(v,target[i],s));cameraUpdate()}
+function resize(){const dpr=Math.min(window.devicePixelRatio||1,1.65),w=Math.max(1,canvas.clientWidth),h=Math.max(1,canvas.clientHeight);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);fxCanvas.width=Math.round(w*dpr);fxCanvas.height=Math.round(h*dpr);fx.setTransform(dpr,0,0,dpr,0,0);if(ctx2d)ctx2d.setTransform(dpr,0,0,dpr,0,0);cameraUpdate()}
+function renderWeather(){const w=fxCanvas.clientWidth,h=fxCanvas.clientHeight;fx.clearRect(0,0,w,h);if(weather==='rain'){fx.strokeStyle='#dceaff55';fx.lineWidth=1.3;for(let i=0;i<80;i++){let x=((i*47.7+clock*220)% (w+80))-40,y=((i*71.3+clock*620)%(h+100))-40;fx.beginPath();fx.moveTo(x,y);fx.lineTo(x-5,y+19);fx.stroke()}}for(let p of grassToss.particles){fx.fillStyle=p.col;fx.save();fx.translate(p.x,p.y);fx.rotate(clock*4+p.r);fx.fillRect(-3,-.5,6,1.4);fx.restore()}if(gestureTrail.length>1){fx.strokeStyle='#e8ff9c';fx.lineWidth=5;fx.lineCap='round';fx.lineJoin='round';fx.beginPath();gestureTrail.forEach((p,i)=>i?fx.lineTo(p[0],p[1]):fx.moveTo(p[0],p[1]));fx.stroke()}if(catchMode.active){const p=project([catchMode.targetX,.2,-71]);if(p){fx.strokeStyle='#e6ff86';fx.lineWidth=4;fx.beginPath();fx.ellipse(p[0],p[1],22,11,0,0,Math.PI*2);fx.stroke()}}}
+function frame(now){try{let dt=Math.min(.04,Math.max(.005,(now-lastTime)/1000||.016));lastTime=now;simulate(dt,now);updateCamera(dt);if(webglOK)renderGL();else renderFallback();renderWeather();if(!ready){ready=true;window.FOOTY_READY=true;setMessage('STADIUM READY · FLICK FROM THE FOOTBALL');$('renderMode').textContent='V0.14 · 3D MODE';$('graphicsStatus').textContent='Graphics: 3D WebGL renderer active';$('bootError').classList.remove('open')}animationId=requestAnimationFrame(frame)}catch(e){cancelAnimationFrame(animationId);graphicsError=String(e.stack||e);console.warn('3D render failed',e);if(webglOK){switchBasic();return}window.showFootyError(graphicsError)}}
+function sound(type){if(!soundOn)return;try{audio??=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let t=audio.currentTime,osc=audio.createOscillator(),gain=audio.createGain(),f=type==='kick'?105:type==='goal'?280:type==='mark'?640:type==='whistle'?900:type==='bounce'?135:175;osc.type=type==='goal'?'sawtooth':'triangle';osc.frequency.setValueAtTime(f,t);osc.frequency.exponentialRampToValueAtTime(f*(type==='kick'?.5:1.3),t+.18);gain.gain.setValueAtTime(.001,t);gain.gain.exponentialRampToValueAtTime(type==='goal'?.075:.045,t+.014);gain.gain.exponentialRampToValueAtTime(.001,t+.3);osc.connect(gain).connect(audio.destination);osc.start(t);osc.stop(t+.32)}catch(e){}}
+function point(e){const r=canvas.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]}
+function startGrass(){if(grassToss.active||flight||rain.open)return;grassToss.active=true;grassToss.t=0;grassToss.bend=0;showStatus('Checking the wind — watch the grass',2);sound('bounce');const spawn=()=>{const p=project([startX-1.0,1.45,startZ+1.15])||[canvas.clientWidth*.37,canvas.clientHeight*.60];for(let i=0;i<33;i++)grassToss.particles.push({x:p[0]+rnd(-8,8),y:p[1]+rnd(-10,10),vx:windX*12+rnd(-12,12),vy:rnd(-90,-35),life:rnd(.8,1.7),r:rnd(0,6),col:['#a6d65e','#d6e6a1','#72b847','#d5c27b'][i%4]})};setTimeout(()=>{if(grassToss.active)spawn()},420);if(training.active&&training.step===2)setTimeout(()=>advanceTraining(),1700)}
+let grassDown=null;
+$('grassPatch').addEventListener('pointerdown',e=>{grassDown={x:e.clientX,y:e.clientY};$('grassPatch').setPointerCapture(e.pointerId);e.preventDefault()});
+$('grassPatch').addEventListener('pointerup',e=>{if(grassDown&&grassDown.y-e.clientY>22)startGrass();else showStatus('Swipe UP from the grass to check the wind',1.7);grassDown=null;e.preventDefault()});
+$('grassButton').addEventListener('click',startGrass);
+function drawWetBall(){const c=$('wipeCanvas'),g=c.getContext('2d'),w=c.width,h=c.height;g.clearRect(0,0,w,h);const grad=g.createRadialGradient(145,65,10,180,115,170);grad.addColorStop(0,'#c76a53');grad.addColorStop(.65,'#97382f');grad.addColorStop(1,'#4c221f');g.save();g.translate(w/2,h/2);g.rotate(-.21);g.fillStyle=grad;g.beginPath();g.ellipse(0,0,138,67,0,0,Math.PI*2);g.fill();g.strokeStyle='#e7b79a';g.lineWidth=3;g.beginPath();g.moveTo(-95,-44);g.quadraticCurveTo(-63,0,-95,44);g.moveTo(95,-44);g.quadraticCurveTo(63,0,95,44);g.stroke();g.strokeStyle='#f3ddc6';g.lineWidth=4;g.beginPath();g.moveTo(-40,0);g.lineTo(40,0);g.stroke();for(let i=-3;i<=3;i++){g.beginPath();g.moveTo(i*11,-10);g.lineTo(i*11,10);g.stroke()}let count=Math.round((1-rain.dryness)*34);g.fillStyle='#a8e4ffce';for(let i=0;i<count;i++){let x=Math.sin(i*18.12)*116,y=Math.cos(i*13.8)*45;g.beginPath();g.ellipse(x,y,3.2,6.3,.25,0,Math.PI*2);g.fill()}g.restore()}
+function openWipe(){if(flight||done||rain.open)return;if(weather!=='rain'&&!(training.active&&training.step===3)){showStatus('Ball wiping is available in rainy conditions',2);return}rain={open:true,started:false,ends:0,dryness:0,last:null,finished:false};$('wipePanel').classList.add('open');$('wipeDone').style.display='none';$('wipeTimer').textContent='2.0';$('wipeFeedback').textContent='Swipe quickly across the football to start';drawWetBall()}
+function finishWipe(){if(!rain.open||rain.finished)return;rain.finished=true;preparedDryness=rain.dryness;slipRisk=clamp(.28-rain.dryness*.23,.05,.28);$('wipeTimer').textContent='DONE';$('wipeFeedback').textContent=`Ball ${Math.round(rain.dryness*100)}% dried · ${rain.dryness>.8?'LOWER':rain.dryness>.4?'MODERATE':'HIGHER'} slip risk`;$('wipeDone').style.display='block';drawWetBall()}
+function closeWipe(){rain.open=false;$('wipePanel').classList.remove('open');showStatus(`Wet-ball slip risk reduced to about ${Math.round(slipRisk*100)}%`,2.3);if(training.active&&training.step===3)setTimeout(()=>endTraining(),550)}
+function wipePointer(e){if(rain.finished)return;const r=$('wipeCanvas').getBoundingClientRect(),p=[(e.clientX-r.left)*360/r.width,(e.clientY-r.top)*230/r.height];if(!rain.started){rain.started=true;rain.ends=performance.now()+2000;const timer=()=>{if(!rain.open||rain.finished)return;const rem=Math.max(0,(rain.ends-performance.now())/1000);$('wipeTimer').textContent=rem.toFixed(1);if(rem<=0)finishWipe();else requestAnimationFrame(timer)};requestAnimationFrame(timer)}if(rain.last){const dist=Math.hypot(p[0]-rain.last[0],p[1]-rain.last[1]);if(Math.hypot(p[0]-180,p[1]-115)<140){rain.dryness=clamp(rain.dryness+dist/900,0,1);drawWetBall()}}rain.last=p;e.preventDefault()}
+$('wipeCanvas').addEventListener('pointerdown',e=>{$('wipeCanvas').setPointerCapture(e.pointerId);rain.last=null;wipePointer(e)});
+$('wipeCanvas').addEventListener('pointermove',e=>{if(e.buttons||e.pressure>0)wipePointer(e)});
+$('wipeCanvas').addEventListener('pointerup',()=>rain.last=null);
+$('wipeCanvas').addEventListener('pointercancel',()=>rain.last=null);
+$('wipeButton').addEventListener('click',openWipe);
+$('wipeDone').addEventListener('click',closeWipe);
+$('sunSpot').addEventListener('pointerdown',e=>{$('sunSpot').classList.add('shaded');$('sunHaze').classList.add('shaded');$('sunSpot').setPointerCapture(e.pointerId);showStatus('Sun blocked — line up your shot',1.2);e.preventDefault()});
+for(const ev of ['pointerup','pointercancel'])$('sunSpot').addEventListener(ev,()=>{$('sunSpot').classList.remove('shaded');$('sunHaze').classList.remove('shaded')});
+function bindGameGestures(){canvas.addEventListener('pointerdown',e=>{if($('drawer').classList.contains('open')||rain.open)return;const p=point(e);if(catchMode.active){swipe={kind:'catch',x:p[0],y:p[1]};canvas.setPointerCapture(e.pointerId);e.preventDefault();return}if(flight||done)return;const b=project([ball.x,ball.y,ball.z]);ballScreen=b||[canvas.clientWidth/2,canvas.clientHeight*.75];const dist=Math.hypot(p[0]-ballScreen[0],p[1]-ballScreen[1]);if(dist>Math.max(85,canvas.clientWidth*.24)){showStatus('Start your flick on the football',1.1);return}swipe={kind:'kick',x:p[0],y:p[1],t:performance.now(),points:[p]};gestureTrail=[p];canvas.setPointerCapture(e.pointerId);e.preventDefault();sound('bounce')});
+canvas.addEventListener('pointermove',e=>{if(!swipe)return;const p=point(e);if(swipe.kind==='catch'){const dx=(p[0]-swipe.x)/canvas.clientWidth;catcher.targetX=clamp(catcher.x+dx*11,-6,6);catchMode.swiped=true;return}swipe.points.push(p);gestureTrail=swipe.points.slice(-35);e.preventDefault()});
+canvas.addEventListener('pointerup',e=>{if(!swipe)return;if(swipe.kind==='catch'){catchMode.swiped=true;swipe=null;return}const p=point(e);swipe.points.push(p);const dy=swipe.y-p[1],dx=p[0]-swipe.x;const n=swipe.points.length,mid=swipe.points[Math.floor(n/2)]||[swipe.x,swipe.y];const cross=(mid[0]-swipe.x)*(p[1]-swipe.y)-(mid[1]-swipe.y)*(p[0]-swipe.x);const curvature=clamp(cross/Math.max(800,Math.hypot(dx,dy)**2*.25),-1,1);const power=clamp(Math.hypot(dx,dy)/(canvas.clientHeight*.32),.1,1);const angle=clamp(dx/Math.max(100,dy)*.6,-.38,.38);swipe=null;setTimeout(()=>gestureTrail=[],180);if(dy<35){showStatus('Swipe UP to kick the football',1.4);return}startKick({power,dx:angle,curve:curvature});e.preventDefault()});
+canvas.addEventListener('pointercancel',()=>{swipe=null;gestureTrail=[]})}
+function openDrawer(){$('drawer').classList.add('open')}
+function closeDrawer(){$('drawer').classList.remove('open')}
+$('menuButton').addEventListener('click',openDrawer);$('closeMenu').addEventListener('click',closeDrawer);
+$('tradButton').addEventListener('click',()=>startRound({practiceMode:false}));$('practiceButton').addEventListener('click',()=>startRound({practiceMode:true}));$('newRound').addEventListener('click',()=>startRound({practiceMode:false}));$('randomShot').addEventListener('click',()=>{shotIndex=(shotIndex+1)%shots.length;chooseShot();closeDrawer()});$('next').addEventListener('click',nextShot);
+$('lengthSelect').addEventListener('change',e=>{gameLength=Number(e.target.value);save('ffLength',String(gameLength));startRound({practiceMode:practice})});
+$('venueSelect').addEventListener('change',e=>{venue=e.target.value;save('ffVenue',venue);buildCrowd();chooseShot()});
+$('weatherSelect').addEventListener('change',e=>{weatherSetting=e.target.value;save('ffWeather',weatherSetting);chooseShot()});
+$('soundSelect').addEventListener('change',e=>{soundOn=e.target.value==='on';save('ffSound',soundOn?'on':'off')});
+function renderTraining(){if(!training.active)return;const titles=['KICK A DROP PUNT','CURVE A GROUND BALL','CHECK THE WIND','DRY THE FOOTBALL'],hints=['Flick upward from the football','Draw a curved upward swipe from the football','Swipe UP from the grass patch','Tap WIPE BALL and rub across the wet football'];$('training').hidden=false;$('skipTraining').hidden=false;$('trainingTitle').textContent=`${training.step+1}/4 · ${titles[training.step]}`;$('trainingHint').textContent=hints[training.step];$('training').querySelector('.arrow').textContent=training.step===1?'↗':training.step===3?'↔':'↑';$('guide').textContent=hints[training.step].toUpperCase()}
+function startTraining(){closeDrawer();training.active=true;training.step=0;shotIndex=0;score=0;weatherSetting='dry';chooseShot();renderTraining();showStatus('Hands-on tutorial · Four short lessons',3)}
+function advanceTraining(){if(!training.active)return;training.step++;if(training.step>=4){endTraining();return}if(training.step===2){weatherSetting='wind';shotIndex=0;chooseShot()}else if(training.step===3){weatherSetting='rain';shotIndex=0;chooseShot()}else chooseShot();renderTraining()}
+function endTraining(){training.active=false;$('training').hidden=true;$('skipTraining').hidden=true;save('ffTutorialDone','yes');weatherSetting=$('weatherSelect').value;startRound({practiceMode:false});showStatus('Tutorial complete — you are ready to kick!',4)}
+$('tutorialButton').addEventListener('click',startTraining);$('skipTraining').addEventListener('click',endTraining);
+function updateTeam(){team.name=($('teamName').value||'YOUR CLUB').trim().slice(0,28);team.primaryHex=$('primaryColor').value;team.secondaryHex=$('secondaryColor').value;team.primary=rgb(team.primaryHex);team.secondary=rgb(team.secondaryHex);refreshLogoTexture()}
+function saveTeam(){updateTeam();save('ffTeamName',team.name);save('ffPrimary',team.primaryHex);save('ffSecondary',team.secondaryHex);if(team.image)save('ffTeamImage',team.image);else try{localStorage.removeItem('ffTeamImage')}catch(e){};showStatus(`${team.name} saved to this device`,3);closeDrawer()}
+$('saveTeam').addEventListener('click',saveTeam);
+$('removeLogo').addEventListener('click',()=>{team.image=null;$('teamLogo').value='';$('logoPreview').removeAttribute('src');$('logoInfo').textContent='Logo removed. Default team number will appear on the guernsey.';refreshLogoTexture();saveTeam()});
+$('teamLogo').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;if(!$('logoRights').checked){$('logoInfo').textContent='Please confirm you have permission to use this logo before uploading.';e.target.value='';return}if(f.size>2e6){$('logoInfo').textContent='Please choose an image smaller than 2 MB.';return}if(!/^image\/(png|jpeg|webp)$/.test(f.type)){$('logoInfo').textContent='Please choose a PNG, JPG or WebP image.';return}const reader=new FileReader();reader.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=192;const g=c.getContext('2d');g.clearRect(0,0,192,192);const s=Math.min(192/im.width,192/im.height);g.drawImage(im,(192-im.width*s)/2,(192-im.height*s)/2,im.width*s,im.height*s);team.image=c.toDataURL('image/png');$('logoPreview').src=team.image;let colors={},data=g.getImageData(0,0,192,192).data;for(let i=0;i<data.length;i+=32){if(data[i+3]<90)continue;const r=Math.round(data[i]/32)*32,gg=Math.round(data[i+1]/32)*32,b=Math.round(data[i+2]/32)*32;if(Math.max(r,gg,b)-Math.min(r,gg,b)<20&&r>200)continue;let key=[r,gg,b].map(v=>clamp(v,0,255));colors[key]=(colors[key]||0)+1}const ranked=Object.entries(colors).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k])=>k.split(',').map(Number));const hex=v=>'#'+v.map(x=>clamp(x,0,255).toString(16).padStart(2,'0')).join('');if(ranked[0])$('primaryColor').value=hex(ranked[0]);if(ranked[1])$('secondaryColor').value=hex(ranked[1]);updateTeam();$('logoInfo').textContent='Colors suggested from logo. Check or adjust them. Team name recognition depends on your browser.';if('TextDetector' in window&&!$('teamName').value.trim()){try{const det=new TextDetector();det.detect(c).then(lines=>{let txt=lines.map(x=>x.rawValue).join(' ').replace(/[^\w &'\-]/g,' ').trim().slice(0,28);if(txt&&!$('teamName').value.trim()){$('teamName').value=txt;$('logoInfo').textContent=`Suggested name: ${txt}. Please check it.`}}).catch(()=>{})}catch(e){}}};im.src=reader.result};reader.readAsDataURL(f)});
+function switchBasic(){try{cancelAnimationFrame(animationId);const replacement=document.createElement('canvas');replacement.id='game';replacement.setAttribute('aria-label','Basic football graphics');canvas.replaceWith(replacement);canvas=replacement;ctx2d=canvas.getContext('2d');if(!ctx2d)throw Error('2D graphics also unavailable');webglOK=false;gl=null;resize();bindGameGestures();$('bootError').classList.remove('open');ready=true;window.FOOTY_READY=true;if(!shot)chooseShot();$('renderMode').textContent='V0.14 · BASIC MODE';$('graphicsStatus').textContent='Graphics: Basic fallback active. Reason: '+(graphicsError||'3D not supported');showStatus('Basic graphics mode · Game remains playable',4);lastTime=performance.now();animationId=requestAnimationFrame(frame)}catch(e){window.showFootyError('Basic mode failed: '+e)}}
+$('basicButton').addEventListener('click',switchBasic);$('retryButton').addEventListener('click',()=>location.reload());
+function boot(){try{team.name=load('ffTeamName','YOUR CLUB');team.primaryHex=load('ffPrimary','#d4ac34');team.secondaryHex=load('ffSecondary','#172a38');team.primary=rgb(team.primaryHex);team.secondary=rgb(team.secondaryHex);team.image=load('ffTeamImage',null);$('teamName').value=team.name==='YOUR CLUB'?'':team.name;$('primaryColor').value=team.primaryHex;$('secondaryColor').value=team.secondaryHex;if(team.image){$('logoPreview').src=team.image;$('logoRights').checked=true}else $('logoPreview').removeAttribute('src');gameLength=Number(load('ffLength','6'));venue=load('ffVenue','stadium');weatherSetting=load('ffWeather','mixed');soundOn=load('ffSound','on')==='on';$('lengthSelect').value=String(gameLength);$('venueSelect').value=venue;$('weatherSelect').value=weatherSetting;$('soundSelect').value=soundOn?'on':'off';try{initWebGL()}catch(e){graphicsError=String(e);console.warn('WebGL failed; falling back to 2D',e);switchBasic();if(load('ffTutorialDone','')!=='yes')setTimeout(()=>{if(!training.active&&!flight)startTraining()},1250);return}resize();bindGameGestures();chooseShot();lastTime=performance.now();animationId=requestAnimationFrame(frame);if(load('ffTutorialDone','')!=='yes')setTimeout(()=>{if(!training.active&&!flight)startTraining()},1250)}catch(e){window.showFootyError(String(e.stack||e))}}
 window.addEventListener('resize',resize);
-resize();
-function cameraReady(){
-cam.position.set(shot[1],2.2,2.8);
-cam.lookAt(0,1.5,-shot[0]);
-cam.updateMatrixWorld();
-let p=new T.Vector3(0,-.55,.5).unproject(cam);
-let dir=p.sub(cam.position).normalize();
-origin.copy(cam.position).addScaledVector(dir,1.05);
-ball.position.copy(origin);
-ball.scale.setScalar(1.25);
-q.setFromAxisAngle(new T.Vector3(0,0,1),technique==='drop'?0:technique==='snap'?-1.02:1.02);
-ball.quaternion.copy(q);
-shadow.visible=false;kicker.position.set(origin.x+1.35,0,origin.z-1.6);kicker.rotation.y=-.28;}
-function setup(keep=false){
-flight=null;
-done=false;
-start=null;
-catchPlay.active=false;catchPlay.camera=false;catchPlay.dragStart=null;catchPlay.swiped=false;
-catchRing.visible=false;$('catchPrompt').hidden=true;
-shot=training.active?[[24,0,2],[20,0,12],[23,0,1],[11,10,-2]][training.step].slice():[...(mode==='arc'?arcShots:shots)[(i+roundSeed)%12]];
-if(i>=12){
-shot[0]+=((i*7)%19)-9;
-shot[1]+=((i*11)%17)-8;
-shot[2]+=((i*5)%13)-6;
-}
-shot[0]=Math.max(7,shot[0]);
-if(windOverride!==null)shot[2]=windOverride;
- weather=training.active?(training.step===2?'rain':'dry'):$('weatherSelect').value==='auto'?['dry','rain','dry','glare','wind','rain'][(i+roundSeed)%6]:$('weatherSelect').value;
- if(weather==='wind'&&Math.abs(shot[2])<8)shot[2]=shot[2]<0?-10:10;
- venue=training.active?(training.step===3?'local':'stadium'):$('venueSelect').value==='auto'?(mode==='arc'?['park','school','park','local'][(i+roundSeed)%4]:['stadium','local','stadium','park'][(i+roundSeed)%4]):$('venueSelect').value;
- scene.fog.color.set(weather==='rain'?0x89999b:0x9ec9e4);scene.background.set(weather==='rain'?0x89999b:0x9ec9e4);
- $('weatherFX').classList.toggle('rain',weather==='rain');$('sunSpot').hidden=weather!=='glare';$('sunSpot').classList.remove('shaded');shadeSun=false;
- wipeQuality=0;slipRisk=weather==='rain'?.13:0;wiping=false;$('wipePanel').hidden=true;$('wipeButton').textContent='💧 Wipe ball';
- $('wipeButton').disabled=weather!=='rain';$('grassButton').disabled=false;
- $('conditionTip').hidden=false;$('conditionTip').textContent=weather==='rain'?'WET FOOTBALL · TAP WIPE BALL BEFORE KICKING':weather==='glare'?'LOW SUN · HOLD THE SUN TO SHADE YOUR VIEW':weather==='wind'?'GUSTY WIND · TOSS GRASS TO READ WIND':'TIP · YOU CAN TOSS GRASS TO CHECK THE WIND';
- 
-// Use technique only when the shot situation justifies it; regular kicks start upright.
-const shotAngle=Math.abs(Math.atan2(shot[1],shot[0])*180/Math.PI);
-const shotRange=Math.hypot(shot[0],shot[1]);
-const closeAngle=mode==='trad'&&shotRange<=25&&shotAngle>=35;
-ground=closeAngle&&([3,7].includes((i+roundSeed)%12));
-if(training.active)ground=training.step===3;
-technique=ground?'drop':closeAngle?(shot[1]<0?'snap':'banana'):'drop';
-for(let n of ['drop','snap','banana'])$(n).classList.toggle('on',n===technique);
- $('trail').setAttribute('points','');
- pending=null;
- $('ground').disabled=mode==='arc';
-$('ground').classList.toggle('on',ground);
-$('air').classList.toggle('on',!ground);
-$('distance').textContent=`${Math.round(Math.hypot(shot[0],shot[1]))} m · ${practice?'Practice':`Kick ${
-i+1}
-/${
-gameLength}
-`}`;
-$('wind').textContent=`${shot[2]<0?'←':'→'} ${Math.round(Math.abs(shot[2])*3.6)} km/h · ${weather==='rain'?'RAIN':weather==='glare'?'SUN':venue.toUpperCase()}`;
-$('score').textContent=score+' / '+(gameLength*9);
-$('result').textContent=ground?'Ground dribbler · close-angle finesse':({drop:'Drop punt',snap:'Snap',banana:'Banana'})[technique]+' · Ready to kick';
-$('next').textContent=practice?'Reset shot':'Restart';
-$('guide').style.display='block';
-$('challenge').hidden=!ground;
-$('challenge').classList.toggle('ground',ground);
-$('challenge').textContent='GROUND BALL REQUIRED';
-$('guide').textContent=ground?'Curve your flick along the ground':'Flick from the football';
-$('powerHint').hidden=mode!=='arc';
-$('powerHint').textContent=mode==='arc'?['BETWEEN THE TREES','HIT THE CRICKET STUMPS','THROUGH THE DOORWAY','LAND INSIDE THE BIN','THROUGH THE TYRE','HIT THE BULLSEYE','HIT THE CONES','KICK UNDER THE BENCH','LAND IN THE CAR BOOT','THROUGH THE BASKETBALL HOOP'][(i+roundSeed)%10]+' · SWEET SPOT 40–60%':'';
-targetBuild();setVenue(venue);
-teammate.visible=mode==='trad';
-setGuernsey();
-teammate.position.set(0,0,-shot[0]-(venue==='stadium'?6.5:9));kicker.visible=true;
-$('bonus').hidden=true;
-cameraReady();if(training.active)paintTraining()}
-function record(p){
-if(flight.scored!==null)return;
-flight.scored=p;
-flight.scoreTime=flight.t;
- $('result').textContent=p===6?(mode==='arc'?'TARGET COMPLETE!':'GOAL!'):p===1?(mode==='arc'?'TARGET HIT':'BEHIND'):'MISS';
- crowdSound(p);
- }
-function finish(p){
-done=true;
-if(!practice&&!replaying)score+=p;
-if(!practice&&!replaying&&i===gameLength-1){
-let key='ffbest_'+mode+'_'+gameLength,old=Number(localStorage.getItem(key)||0);
-if(score>old)localStorage.setItem(key,String(score));
-updateBest();
-}
-$('score').textContent=score+' / '+(gameLength*9);
-$('result').textContent=p===9?'GOAL + MARK BONUS · +9':p===6?(mode==='arc'?'TARGET COMPLETE · +6':'GOAL · +6'):p===1?(mode==='arc'?'TARGET HIT · +1':'BEHIND · +1'):'MISS · 0';
-if(!practice&&i===gameLength-1)$('result').textContent+=seasonActive?' · PLAYER ROUND COMPLETE':' · Round complete';
-$('next').textContent=practice?'Try again':seasonActive?(i===gameLength-1?'Pass phone / next match':'Next kick'):i===gameLength-1?'Play again':'Next kick'}
+window.addEventListener('orientationchange',()=>setTimeout(resize,200));
+boot();
 
-let audio;
-function initAudio(){
-try{
-audio??=new (window.AudioContext||window.webkitAudioContext)();
-audio.resume()}
-catch(e){
-}
-}
-function crowdSound(p){
-if(!audio||!soundOn)return;
-let dur=1.5,b=audio.createBuffer(1,Math.floor(audio.sampleRate*dur),audio.sampleRate),d=b.getChannelData(0),v=0;
-for(let j=0;
-j<d.length;
-j++){
-v=.93*v+.07*(Math.random()*2-1);
-d[j]=v*Math.sin(Math.PI*j/d.length)}
-let src=audio.createBufferSource(),g=audio.createGain(),filter=audio.createBiquadFilter();
-src.buffer=b;
-filter.type='bandpass';
-filter.frequency.value=p===6?900:420;
-filter.Q.value=.5;
-g.gain.value=(p===6?1.2:p===1?.5:.2)*effectsVolume;
-src.connect(filter).connect(g).connect(audio.destination);
-src.start()}
-let effectsVolume=.55;
-function beep(type){if(!soundOn)return;initAudio();if(!audio)return;
-const osc=audio.createOscillator(),env=audio.createGain(),t=audio.currentTime;
-let frequency=type==='kick'?75:type==='mark'?580:type==='whistle'?1100:160;
-osc.type=type==='whistle'?'sine':'triangle';osc.frequency.setValueAtTime(frequency,t);osc.frequency.exponentialRampToValueAtTime(frequency*(type==='kick'?.48:1.3),t+.13);
-env.gain.setValueAtTime(.0001,t);env.gain.exponentialRampToValueAtTime(Math.max(.001,effectsVolume*.16),t+.015);env.gain.exponentialRampToValueAtTime(.0001,t+(type==='whistle'?.4:.19));osc.connect(env).connect(audio.destination);osc.start(t);osc.stop(t+.42)}
-function playKickSound(){beep('kick')}function playBounceSound(){beep('bounce')}function playMarkSound(){beep('mark')}
-
-function launch(k){
-lastKick={
-...k,technique,ground}
-;
-let aim=Math.atan2(-origin.x,-(-shot[0]-origin.z))+k.angle;
-let speed=ground?9+k.power*14:5+k.power*29;
-let vy=ground?.35+k.power*1.45:2.5+k.power*11;
-if(mode==='arc'){
-let range=Math.hypot(origin.x,shot[0]+origin.z),time=1.35+range*.025;
-let targetY={trees:2.3,stumps:.85,door:1.85,bin:1.3,tyre:2.1,wall:1.8,cones:.55,bench:.5,car:1.35,hoop:2.75}[arcadeKinds[(i+roundSeed)%10]];
-vy=(targetY-origin.y+4.905*time*time)/time;
-speed=range/time*(.80+k.power*.40);
-aim-=Math.atan2(shot[2]*.48*time*time/2,range)*.8;
-}
-if(weather==='rain'&&Math.random()<slipRisk){speed*=.87+Math.random()*.09;aim+=(Math.random()-.5)*.16;$('result').textContent='SLIPPERY CONTACT — SHOT MISHIT';}
- catchPlay.active=false;catchPlay.camera=false;catchPlay.dragStart=null;catchRing.visible=false;$('catchPrompt').hidden=true;
- flight={
-x:origin.x,y:origin.y,z:origin.z,vx:Math.sin(aim)*speed,vy,vz:-Math.cos(aim)*speed,t:0,spin:k.spin,phase:0,scored:null,scoreTime:0,firstBounce:false,bonusChecked:false}
-;
-q.copy(ball.quaternion);playKickSound();
-ball.scale.setScalar(1.25);
-shadow.visible=true;
-done=false;
-$('guide').style.display='none';
-$('challenge').hidden=true;
-$('powerHint').hidden=true;
-$('result').textContent=`Power ${Math.round(k.power*100)}% · ${ground?'Ground dribbler':technique==='drop'?'Drop punt':technique==='banana'?'Banana':'Snap'}`}
-
-let pending=null;
- let prev=performance.now();
-function frame(now){
-requestAnimationFrame(frame);
-const realDt=Math.min(.035,(now-prev)/1000);
-let dt=realDt*(slow?.32:1)*(catchPlay.active?.42:1);
-prev=now;
-if(pending&&now>=pending.at){
-let k=pending.k;
-pending=null;
- $('trail').setAttribute('points','');
-launch(k)}
-if(flight&&!done){
-let f=flight,oldZ=f.z,oldX=f.x,oldY=f.y;
-maybeStartCatch(f);
-if(catchPlay.active){
- // Catcher movement uses real time while the ball flight slows to offer an achievable reaction window.
- let delta=catchPlay.desiredX-teammate.position.x;
- teammate.position.x+=T.MathUtils.clamp(delta,-8.5*realDt,8.5*realDt);
- let c=catchPoint(f);catchRing.position.set(c.x,.12,teammate.position.z);
- teammate.rotation.z=Math.sin(now*.02)*Math.min(.12,Math.abs(delta)*.04);
-}
-f.t+=dt;
-ball.scale.setScalar(1+.25*Math.max(0,1-f.t/.25));
-let airborne=f.y>.19;
-f.vx+=(f.spin*(airborne?3.4:(f.firstBounce?-8:3.5))+(airborne?shot[2]*.46:0))*dt;
-if(airborne||f.vy>0)f.vy-=9.81*dt;
-f.x+=f.vx*dt;
-f.y+=f.vy*dt;
-f.z+=f.vz*dt;
-if(f.y<.13){if(!f.firstBounce){f.firstBounce=true;playBounceSound();}
-f.y=.13;
-f.vy=Math.abs(f.vy)*(ground?.38:.48);
-if(Math.abs(f.vy)>.3){
-f.vz*=ground?.96:.78;
-f.vx*=.96;
-}
-if(f.vy<.65)f.vy=0}
-if(f.y<=.131){
-f.vz*=Math.exp(-(ground?(weather==='rain'?.34:.43):.65)*dt);
-f.vx*=Math.exp(-(ground?.42:.65)*dt)}
-// World transverse axis: positive X rotates the top toward the kicker (+Z), i.e. backspin.
-axis.set(-f.vz,0,f.vx).normalize();
-axis.y=technique==='drop'?f.spin*.18:(technique==='snap'?-1:1)*.95+f.spin*.35;
-axis.normalize();
-let rate=ground||!airborne?-Math.min(33,Math.hypot(f.vx,f.vz)/.145):13;
- q.premultiply(new T.Quaternion().setFromAxisAngle(axis,rate*dt));
-leanQ.setFromAxisAngle(new T.Vector3(0,0,1),-shot[2]*.012);
-ball.quaternion.copy(q).premultiply(leanQ);
-ball.position.set(f.x,f.y,f.z);
-shadow.position.set(f.x,.03,f.z);
-let desired=new T.Vector3(f.x*.65,Math.max(2.5,f.y+1.3),f.z+5.5);
-if(catchPlay.camera){
- // Broadcast camera behind the posts, looking back into the goalmouth and catch corridor.
- desired.set(teammate.position.x*.22,3.2,teammate.position.z-7.5);
- cam.position.lerp(desired,Math.min(1,realDt*4.7));
- const cp=catchPoint(f);
- cam.lookAt(cp.x*.35+teammate.position.x*.25,2.15,teammate.position.z+6.5);
-}else if(f.t>1.0){
- if(venue==='stadium')desired.z=Math.max(-shot[0]+2.5,desired.z);
- cam.position.lerp(desired,Math.min(1,dt*2));
- cam.lookAt(f.x*.65,Math.max(.7,f.y*.65),Math.max(-shot[0]-7,f.z-7));
-}
-if(mode==='trad'&&oldZ>-shot[0]&&f.z<=-shot[0]){
-let a=(-shot[0]-oldZ)/(f.z-oldZ),x=Math.abs(oldX+(f.x-oldX)*a);
-record(x<3.2?6:x<9.6?1:0)}
-else if(mode==='arc'){
-let kind=arcadeKinds[(i+roundSeed)%10],cross=oldZ>-shot[0]&&f.z<=-shot[0];
-if(cross){
-let a=(-shot[0]-oldZ)/(f.z-oldZ),x=oldX+(f.x-oldX)*a,y=oldY+(f.y-oldY)*a;
-let hit=kind==='trees'?Math.abs(x)<1.85&&y<5.5:kind==='door'?Math.abs(x)<1.2&&y<3.3:kind==='tyre'?Math.hypot(x,y-2.1)<.72:kind==='stumps'?Math.abs(x)<.52&&y<1.45:kind==='wall'?Math.abs(x)<.75&&Math.abs(y-1.8)<.75:kind==='cones'?Math.abs(x)<1.25&&y<1.4:kind==='bench'?Math.abs(x)<1.5&&y<.95:kind==='car'?Math.abs(x)<.8&&y>1.0&&y<1.9:kind==='hoop'?Math.abs(x)<.75&&Math.abs(y-2.75)<.7:Math.abs(x)<.8&&y>1.08&&y<1.7;
-record(hit?6:(Math.abs(x)<2&&y<4?1:0))}
-}
-// Player anticipates landing location and moves under the flight (greater room at local grounds).
- if(mode==='trad' && f.t>.3&&!catchingVenue()){let secs=Math.max(0,(-shot[0]-(venue==='stadium'?6.5:9)-f.z)/Math.min(-.01,f.vz));let anticipated=f.x+f.vx*Math.min(1.2,secs);let limit=venue==='stadium'?2.2:5.6;let tx=T.MathUtils.clamp(anticipated,-limit,limit);let dx=tx-teammate.position.x;teammate.position.x+=T.MathUtils.clamp(dx,-dt*3,dt*3);teammate.rotation.z=Math.sin(f.t*9)*Math.min(.08,Math.abs(dx)*.03);}
- if(f.scored===6&&mode==='trad'&&!f.bonusChecked&&f.z<=teammate.position.z){
-f.bonusChecked=true;
-const catchWasPlayerControlled=catchPlay.camera;
-const catchPlayerAttempted=catchPlay.swiped;
-catchPlay.active=false;catchPlay.dragStart=null;catchRing.visible=false;$('catchPrompt').hidden=true;
-if((!catchWasPlayerControlled||catchPlayerAttempted)&&Math.abs(f.x-teammate.position.x)<(weather==='rain'?.75:1.4)&&f.y>1.3&&f.y<3.8&&Math.hypot(f.vx,f.vz)>10.5&&Math.random()>(weather==='rain'?.23:.04)){
-f.bonus=3;
-$('bonus').hidden=false;
-$('result').textContent='GOAL + TEAMMATE MARK!';
-crowdSound(6);playMarkSound()}else { $('result').textContent=catchWasPlayerControlled?(weather==='rain'?'GOAL · WET MARK MISSED · +6':'GOAL · MARK MISSED · +6'):(weather==='rain'?'GOAL · SLIPPERY MARK MISSED':'GOAL · +6');if(weather==='rain')playBounceSound()}
-}
-// A scored ball cannot fly through or over the crowd into another grandstand.
-// Stadium's 19m roof/front seating forms a physical end to the shot.
-if(venue==='stadium' && f.z < -shot[0]-9.0 && !f.hitStand){
- f.hitStand=true;f.z=-shot[0]-9.0;f.vz=Math.max(0.25,-f.vz*.07);
- f.vx*=.24;f.vy=Math.min(f.vy,0)-Math.min(4,f.y*.30);
- if(f.scored===null)record(0);
-}
-if(f.scored!==null&&f.t-f.scoreTime>3.0)finish(f.scored+(f.bonus||0));
-else if(f.scored===null&&(f.t>12||f.z<-shot[0]-7||Math.abs(f.x)>65||Math.hypot(f.vx,f.vz)<.5))record(0)}
-for(let c of crowdGroups)c.position.y=flight&&flight.scored===6?Math.abs(Math.sin(now*.012))*.22:0;weatherFrame(now,dt);if(flight){kArmL.rotation.x=-Math.sin(Math.min(1,flight.t)*Math.PI)*.7;kicker.rotation.y=Math.sin(Math.min(flight.t,1)*3)*.2}else{kArmL.rotation.x*=.97;kicker.rotation.y*=.98}
-renderer.render(scene,cam)}
-requestAnimationFrame(frame);
-
-function pos(e){
-let r=stage.getBoundingClientRect();
-return {
-x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height}
-}
-stage.onpointerdown=e=>{
-if(catchPlay.active){let p=pos(e);catchPlay.dragStart=p;catchPlay.dragX=catchPlay.desiredX;
- stage.setPointerCapture(e.pointerId);e.preventDefault();return;}
-if(flight||done||pending||wiping||document.body.classList.contains('menu-open')||grassGesture)return;
- initAudio();
-let p=pos(e);
-screen.copy(ball.position).project(cam);
-let bx=(screen.x+1)/2,by=(1-screen.y)/2;
-if(Math.abs(p.x-bx)>.19||Math.abs(p.y-by)>.19)return;
-start={
-...p,bx,t:performance.now(),points:[]}
-;
-stage.setPointerCapture(e.pointerId)}
-;
-stage.onpointermove=e=>{
-if(catchPlay.active&&catchPlay.dragStart){let p=pos(e),dx=p.x-catchPlay.dragStart.x;
-catchPlay.desiredX=T.MathUtils.clamp(catchPlay.dragX+dx*17,-6,6);
-if(Math.abs(dx)>.025)catchPlay.swiped=true;
-return;}
-if(start){
-let pp=pos(e);
-if(mode==='arc'){
-$('powerHint').textContent='Power '+Math.round(T.MathUtils.clamp((start.y-pp.y)*1.5+(start.y-pp.y)/Math.max(70,performance.now()-start.t)*100,.08,1)*100)+'% · green band 40–60%';
-}
-start.points.push(pp);
-$('trail').setAttribute('points',[start,...start.points].map(p=>`${p.x*1000},${p.y*1000}`).join(' '))}
-}
-;
-stage.onpointercancel=()=>{start=null;catchPlay.dragStart=null};
-stage.onpointerup=e=>{
-if(catchPlay.active){catchPlay.dragStart=null;return;}
-if(!start)return;
-let p=pos(e),dx=p.x-start.x,dy=start.y-p.y,t=Math.max(70,performance.now()-start.t),off=(start.x-start.bx)/.12,bend=0;
-for(let a of start.points){
-let u=(start.y-a.y)/Math.max(.01,dy);
-if(u>.15&&u<.85)bend+=a.x-(start.x+dx*u)}
-bend/=Math.max(1,start.points.length);
-let spin=T.MathUtils.clamp(bend*36+(technique==='drop'?0:(technique==='snap'?-.25:.25)),-1.5,1.5);if(ground)spin=T.MathUtils.clamp(spin*1.45,-1.9,1.9);
-start=null;
-if(dy<.035){
-$('trail').setAttribute('points','');
-return;
-}
-if(training.active&&(training.step===0||training.step===3)){
- const isStraight=Math.abs(dx)<.11&&Math.abs(bend)<.018;
- const isCurved=Math.abs(bend)>.009||Math.abs(dx)>.14;
- if(training.step===0&&!isStraight){
-   $('trainingPrompt').textContent='Try a STRAIGHT upward flick to learn the drop punt';
-   $('trail').setAttribute('points','');return;
- }
- if(training.step===3&&!isCurved){
-   $('trainingPrompt').textContent='Curve your fingertip as you flick UP for the ground ball';
-   $('trail').setAttribute('points','');return;
- }
- trainingAdvance(training.step);
-}
-pending={
-at:performance.now()+350,k:{
-power:T.MathUtils.clamp(dy*1.5+dy/t*100,.08,1),angle:Math.atan2(dx,dy)*.7,spin}
-}
-}
-;
-for(let m of ['trad','arc','practice'])$(m).onclick=()=>{if(m==='arc')return;if(training.active){training.active=false;$('training').hidden=true;localStorage.setItem('ffTutorialSeen','1')}seasonActive=false;season=null;$('seasonPanel').hidden=true;
-
-replaying=false;
-practice=m==='practice';
-mode=m==='arc'?'arc':'trad';
-i=score=0;
-windOverride=null;
-for(let n of ['trad','arc','practice'])$(n).classList.toggle('on',n===m);
-$('lab').hidden=!practice;
-setup()}
-;
-// Offline pass-and-play tournaments are deliberately separate from online invitations.
-function seasonTeams(){return $('teamList').value.split(/[,\n]+/).map(x=>x.trim().slice(0,22)).filter(Boolean).slice(0,10)}
-function schedulePairs(teams){let pairs=[];for(let a=0;a<teams.length;a++)for(let b=a+1;b<teams.length;b++)pairs.push({a,b,scores:[],phase:'regular'});return pairs}
-function setSeasonPlayer(){if(!season)return;let match=season.games[season.matchIndex];if(!match)return;let player=match[season.side===0?'a':'b'];clubName=season.teams[player];$('clubPreview').textContent=clubName;$('result').textContent='PASS PHONE TO '+clubName.toUpperCase()+' · READY';}
-function seasonNext(){if(!season)return;season.matchIndex++;season.side=0;i=score=0;
-if(season.matchIndex>=season.games.length){if(season.format==='league'&&!season.finals){let ranking=season.teams.map((t,n)=>({name:t,id:n,pts:0,pf:0,pa:0,w:0,d:0}));for(let g of season.games){if(g.scores.length<2)continue;let A=ranking[g.a],B=ranking[g.b],sa=g.scores[0],sb=g.scores[1];A.pf+=sa;A.pa+=sb;B.pf+=sb;B.pa+=sa;if(sa>sb){A.pts+=4;A.w++}else if(sa<sb){B.pts+=4;B.w++}else{A.pts+=2;B.pts+=2;A.d++;B.d++}}
-ranking.sort((a,b)=>b.pts-a.pts||((b.pf/Math.max(1,b.pa))-(a.pf/Math.max(1,a.pa)))||b.pf-a.pf);season.rank=ranking;season.finals=true;season.matchIndex=season.games.length;
-if(ranking.length>=4){season.games.push({a:ranking[0].id,b:ranking[3].id,scores:[],phase:'semi1'},{a:ranking[1].id,b:ranking[2].id,scores:[],phase:'semi2'})}else if(ranking.length>=2){season.games.push({a:ranking[0].id,b:ranking[1].id,scores:[],phase:'final'})}}
-else if(season.finals){let games=season.games;let semis=games.filter(g=>g.phase.startsWith('semi'));if(semis.length===2&&semis.every(g=>g.scores.length===2)&&!games.some(g=>g.phase==='final')){let winner=g=>g.scores[0]>=g.scores[1]?g.a:g.b;games.push({a:winner(semis[0]),b:winner(semis[1]),scores:[],phase:'final'})}}
-}
-if(season.matchIndex>=season.games.length){$('seasonInfo').textContent='COMPETITION COMPLETE! See final standings below.';seasonActive=false;$('next').textContent='Play again';renderSeason();return}
-setSeasonPlayer();setup();renderSeason();}
-function renderSeason(){if(!season)return;let g=season.games[season.matchIndex];if(g)$('seasonInfo').textContent=`MATCH ${season.matchIndex+1}/${season.games.length} · ${season.teams[g.a]} vs ${season.teams[g.b]} · ${g.phase==='regular'?'Round robin':g.phase.toUpperCase()} · ${season.side===0?'First':'Second'} kicker`;let out='<table><thead><tr><th>Team</th><th>Pts</th><th>W</th><th>D</th><th>For</th><th>%</th></tr></thead><tbody>';
-let ranking=season.teams.map((name,id)=>({name,id,pts:0,w:0,d:0,pf:0,pa:0}));for(let match of season.games.filter(g=>g.phase==='regular'&&g.scores.length>=2)){let a=ranking[match.a],b=ranking[match.b],sa=match.scores[0],sb=match.scores[1];a.pf+=sa;a.pa+=sb;b.pf+=sb;b.pa+=sa;if(sa>sb){a.pts+=4;a.w++}else if(sb>sa){b.pts+=4;b.w++}else{a.pts+=2;b.pts+=2;a.d++;b.d++}}
-for(let r of ranking.sort((a,b)=>b.pts-a.pts||b.pf/Math.max(1,b.pa)-a.pf/Math.max(1,a.pa)))out+=`<tr><td>${r.name.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</td><td>${r.pts}</td><td>${r.w}</td><td>${r.d}</td><td>${r.pf}</td><td>${Math.round(100*r.pf/Math.max(1,r.pa))}%</td></tr>`;
-$('seasonLadder').innerHTML=out+'</tbody></table>';
-}
-$('season').onclick=()=>{$('seasonPanel').hidden=!$('seasonPanel').hidden;};
-$('createSeason').onclick=()=>{let teams=seasonTeams();if(teams.length<2){$('seasonInfo').textContent='Enter at least two teams';return;}let format=$('seasonFormat').value;if(format==='quick')teams=teams.slice(0,2);
-season={teams,format,games:format==='quick'?[{a:0,b:1,scores:[],phase:'final'}]:schedulePairs(teams),matchIndex:0,side:0,finals:format==='quick'};seasonActive=true;mode='trad';practice=false;i=score=0;roundSeed=0;
-for(let n of ['trad','arc','practice'])$(n).classList.toggle('on',false);$('season').classList.add('on');$('stopSeason').hidden=false;setSeasonPlayer();setup();renderSeason()};
-$('stopSeason').onclick=()=>{season=null;seasonActive=false;$('season').classList.remove('on');$('seasonPanel').hidden=true;$('stopSeason').hidden=true;clubName=($('teamName').value||'YOUR CLUB');$('trad').click()};
-
-for(let m of ['air','ground'])$(m).onclick=()=>{
-if(flight||mode==='arc'&&m==='ground')return;
-ground=m==='ground';
-setup(true)}
-;
-for(let n of ['drop','snap','banana'])$(n).onclick=()=>{
-if(flight||done)return;
-technique=n;
-setup(true)}
-;
-$('next').onclick=()=>{replaying=false;
-if(seasonActive&&season){if(!done)return;if(i<gameLength-1){i++;setup();return}let m=season.games[season.matchIndex];m.scores[season.side]=score;if(season.side===0){season.side=1;i=score=0;setSeasonPlayer();setup();renderSeason();return;}seasonNext();return;}
-if(done&&!practice&&i<gameLength-1)i++;else if(!practice)i=score=0;setup()}
-;
-$('slow').onclick=()=>{
-slow=!slow;
-$('slow').textContent='Slow motion: '+(slow?'on':'off')}
-;
-$('replay').onclick=()=>{
-if(lastKick){
-replaying=true;
-technique=lastKick.technique;
-ground=lastKick.ground;
-setup(true);
-launch(lastKick)}
-}
-;
-$('change').onclick=()=>{
-i=(i+1)%6;
-setup()}
-;
-$('gust').onclick=()=>{
-windOverride=windOverride===null?18:windOverride===18?-18:windOverride===-18?0:18;
-setup()}
-;
-$('tutorial').onclick=()=>{
-$('teach').hidden=!$('teach').hidden}
-;
-$('closeTeach').onclick=()=>{
-$('teach').hidden=true;document.body.classList.remove('menu-open')}
-;
-
-function updateBest(){
-let v=localStorage.getItem('ffbest_'+mode+'_'+gameLength);
-$('recordBoard').textContent=`${clubName} · ${mode==='arc'?'ARCADE':'GOAL KICKING'} · PERSONAL BEST: ${v||'—'} / ${gameLength*9}`}
-
-function setGuernsey(){for(let person of [teammate,kicker])person.traverse(o=>{if(o.isMesh&&o.userData.clubJersey)o.material.color.set(clubColor);if(o.isMesh&&o.userData.clubTrim)o.material.color.set(clubTrim)})
-for(const label of backNumbers){const old=label.material.map;label.material.map=coloredText(clubName);label.material.needsUpdate=true;old?.dispose()}}
-
-function updateClub(){
-if(!seasonActive)clubName=($('teamName').value||'YOUR CLUB').trim().slice(0,22);
-clubColor=$('teamColor').value;clubTrim=$('teamTrim').value;
-$('clubPreview').textContent=clubName;
-localStorage.setItem('ffClubName',clubName);
-localStorage.setItem('ffClubColor',clubColor);localStorage.setItem('ffClubTrim',clubTrim);
-setGuernsey();
-updateBest()}
-
-$('teamName').value=localStorage.getItem('ffClubName')||'';
-$('teamColor').value=localStorage.getItem('ffClubColor')||'#d62e3e';$('teamTrim').value=localStorage.getItem('ffClubTrim')||'#e6eee9';
-$('teamName').addEventListener('input',updateClub);
-$('teamColor').addEventListener('input',updateClub);$('teamTrim').addEventListener('input',updateClub);
-
-$('gameLength').addEventListener('change',()=>{
-gameLength=Number($('gameLength').value);
-i=score=0;
-setup();
-updateBest()}
-);
-
-$('randomRound').onclick=()=>{
-roundSeed=(roundSeed+1)%6;
-i=score=0;
-setup()}
-;
-
-$('soundToggle').onclick=()=>{
-soundOn=!soundOn;
-$('soundToggle').textContent='Sound: '+(soundOn?'on':'off')}
-;
-
-function suggestColours(c){let a=c.getContext('2d').getImageData(0,0,c.width,c.height).data,bins=new Map();
-for(let j=0;j<a.length;j+=16){let r=a[j],g=a[j+1],b=a[j+2],alpha=a[j+3];if(alpha<120)continue;let mx=Math.max(r,g,b),mn=Math.min(r,g,b);if(mx-mn<30||mx<60||mx>250)continue;
-let R=Math.round(r/42)*42,G=Math.round(g/42)*42,B=Math.round(b/42)*42,key=[R,G,B].join(',');bins.set(key,(bins.get(key)||0)+1)}
-let found=[...bins].sort((a,b)=>b[1]-a[1]).map(v=>v[0].split(',').map(Number));if(!found.length)return;
-let p=found[0],s=found.find(q=>Math.hypot(q[0]-p[0],q[1]-p[1],q[2]-p[2])>95)||[236,236,227];
-let hex=v=>'#'+v.map(x=>Math.max(0,Math.min(255,x)).toString(16).padStart(2,'0')).join('');
-$('teamColor').value=hex(p);$('teamTrim').value=hex(s);updateClub();$('logoHint').textContent='Suggested guernsey colors extracted from your image. You can change them.'}
-async function suggestName(data){if(($('teamName').value||'').trim())return;
-try{let result='';if('TextDetector' in window){let detector=new window.TextDetector();let bitmap=await createImageBitmap(await (await fetch(data)).blob());let lines=await detector.detect(bitmap);result=lines.map(x=>x.rawValue).join(' ').trim()}else{
-$('logoHint').textContent+=' Team-name reading needs a supported browser; enter it manually.';return}
-result=result.replace(/[^A-Za-z0-9 &'-]/g,' ').replace(/\s+/g,' ').trim().slice(0,22);
-if(result&&!$('teamName').value){$('teamName').placeholder=result;$('logoHint').textContent=`Detected possible name: ${result}. Tap team name to confirm or edit.`}
-}catch(e){$('logoHint').textContent='Logo colors detected. Automatic text recognition is not available on this phone; enter team name manually.'}}
-
-$('teamLogo').addEventListener('change',e=>{
-let f=e.target.files[0];
-if(!f)return;
-if(!$('logoRights').checked){$('err').textContent='Confirm that you own or have permission to use your logo, then select it again.';e.target.value='';return;}
-localStorage.setItem('ffLogoRights','yes');
-if(f.size>2e6){
-$('err').textContent='Please choose an emblem smaller than 2 MB';
-return;
-}
-let r=new FileReader();
-r.onload=()=>{
-let im=new Image();
-im.onload=()=>{
-let c=document.createElement('canvas');
-c.width=c.height=128;
-let cx=c.getContext('2d');
-cx.clearRect(0,0,128,128);
-let scale=Math.min(128/im.width,128/im.height);
-cx.drawImage(im,(128-im.width*scale)/2,(128-im.height*scale)/2,im.width*scale,im.height*scale);
-clubLogo=c.toDataURL('image/png');suggestColours(c);suggestName(clubLogo);
-try{
-localStorage.setItem('ffClubLogo',clubLogo)}
-catch(e){
-}
-applyLogo();
-}
-;
-im.src=r.result}
-;
-r.readAsDataURL(f)}
-);
-
-function applyLogo(){
-const authorized=$('logoRights').checked;
-const logoToShow=authorized?clubLogo:null;
-badge.visible=!logoToShow;
-let previous=teammate.getObjectByName('clubLogoBillboard');
-if(previous){
-previous.parent.remove(previous);
-previous.material.map?.dispose();
-previous.material.dispose();
-previous.geometry.dispose()}
-if(!logoToShow){let oldK=kicker.getObjectByName('kickerLogo');if(oldK){kicker.remove(oldK);oldK.material.dispose();oldK.geometry.dispose()};kBadge.visible=true;return;}
-let tx=new T.TextureLoader().load(clubLogo);
-tx.colorSpace=T.SRGBColorSpace;
-let sprite=new T.Sprite(new T.SpriteMaterial({
-map:tx,transparent:true,depthTest:true}
-));
-sprite.name='clubLogoBillboard';
-sprite.scale.set(.65,.65,1);
-sprite.position.set(0,1.65,.3);
-teammate.add(sprite);kBadge.visible=false;let oldK=kicker.getObjectByName('kickerLogo');if(oldK){kicker.remove(oldK);oldK.material.dispose()};let im=mesh(new T.PlaneGeometry(.38,.38),new T.MeshBasicMaterial({map:tx,transparent:true,side:T.DoubleSide}),0,1.45,.36,kicker);im.name='kickerLogo';
-$('clubPreview').textContent='🛡 '+clubName;
-}
-
-clubLogo=localStorage.getItem('ffClubLogo');
-$('logoRights').checked=localStorage.getItem('ffLogoRights')==='yes';
-$('logoRights').onchange=()=>{localStorage.setItem('ffLogoRights',$('logoRights').checked?'yes':'no');applyLogo();$('logoHint').textContent=$('logoRights').checked?'Permission confirmed for local use.':'Confirm image rights to display your uploaded logo.';};
-$('removeLogo').onclick=()=>{clubLogo=null;localStorage.removeItem('ffClubLogo');localStorage.removeItem('ffLogoRights');$('logoRights').checked=false;$('teamLogo').value='';applyLogo();$('logoHint').textContent='Logo removed from this device. You can upload a new one.';};
-if(clubLogo) {applyLogo();if(!$('logoRights').checked)$('logoHint').textContent='Existing image saved locally; confirm you have rights to it before displaying.';}
-updateClub();
-
-
-// Live guided tutorial. Each step is completed by the actual gesture, not tapping a page of text.
-function paintTraining(){
- if(!training.active){$('training').hidden=true;return}
- const info=[
- ['drop','1 / 4','STRAIGHT DROP PUNT','Flick upward from the football'],
- ['grass','2 / 4','READ THE WIND','Swipe UP from the grass patch'],
- ['rain','3 / 4','DRY THE FOOTBALL','Tap WIPE BALL, then rub it for 2 seconds'],
- ['ground','4 / 4','GROUND BALL FINESSE','Curve a short flick from the football']
- ][training.step];
- $('training').hidden=false;$('training').dataset.action=info[0];$('trainingStep').textContent='TRAINING '+info[1];
- $('trainingTitle').textContent=info[2];$('trainingPrompt').textContent=info[3];
- $('trainingAnimation').textContent=['↑','🌱 ↑','💧 ↔','↷'][training.step];
-}
-function startTraining(){
- document.body.classList.remove('menu-open');$('teach').hidden=true;
- training.active=true;training.step=0;training.advancing=false;
- practice=true;mode='trad';seasonActive=false;i=0;score=0;roundSeed=0;windOverride=null;
- setup();paintTraining();
-}
-function endTraining(){
- training.active=false;training.advancing=false;localStorage.setItem('ffTutorialSeen','1');
- $('training').hidden=true;practice=false;mode='trad';i=0;score=0;roundSeed=0;windOverride=null;
- setup();$('result').textContent='TRAINING COMPLETE · READY FOR MATCH DAY';
-}
-function trainingAdvance(match){
- if(!training.active||training.advancing||training.step!==match)return;
- training.advancing=true;
- $('trainingTitle').textContent='NICE WORK!';$('trainingPrompt').textContent='Next skill…';
- // Let the gesture and resulting kick/grass animation play before switching lessons.
- const delay=training.step===0?2100:training.step===1?1700:training.step===3?1900:800;
- setTimeout(()=>{if(!training.active)return;training.advancing=false;training.step++;if(training.step>3){endTraining();return}setup();paintTraining()},delay);
-}
-$('skipTraining').onclick=endTraining;
-$('tutorial').onclick=()=>startTraining();
-$('closeTeach').onclick=startTraining;
-
-// Environmental interactions: same wind used by grass and ball; self-contained touch handlers.
-const grassCanvas=$('grassCanvas'),gx=grassCanvas.getContext('2d');
-let grassGesture=null, grassEmitAt=0, grassPoseUntil=0;
-const grassPatch=$('grassPatch');
-function grassFromHand(){
-  kicker.updateMatrixWorld(true);cam.updateMatrixWorld(true);
-  const world=kicker.localToWorld(new T.Vector3(.53,1.53,.28)).project(cam);
-  const x=T.MathUtils.clamp((world.x+1)*.5*stage.clientWidth,15,stage.clientWidth-15);
-  const y=T.MathUtils.clamp((1-world.y)*.5*stage.clientHeight,20,stage.clientHeight-20);
-  grassFlight=[];
-  for(let j=0;j<65;j++)grassFlight.push({x,y,vx:shot[2]*3.5+(Math.random()-.5)*32,vy:-85-Math.random()*95,age:0,lifetime:1.4+Math.random()*.85,size:1.7+Math.random()*3.8});
-  $('conditionTip').hidden=false;
-  $('conditionTip').textContent='GRASS DRIFT · '+(Math.abs(shot[2])<2?'VERY LIGHT WIND':shot[2]<0?'BLOWING LEFT':'BLOWING RIGHT');
-}
-function tossGrass(){
- if(flight||pending||done||wiping)return;
- grassEmitAt=performance.now()+480;grassPoseUntil=performance.now()+1550;if(training.active)trainingAdvance(1);
- kArmR.rotation.x=-1.5;kicker.userData.premiumArms?.[1] && (kicker.userData.premiumArms[1].rotation.x=-1.4);kicker.rotation.x=.32;
- $('conditionTip').hidden=false;$('conditionTip').textContent='THE PLAYER PICKS UP GRASS AND RELEASES IT INTO THE WIND';
-}
-$('grassButton').onclick=()=>{$('grassPatch').classList.add('pulse');tossGrass();setTimeout(()=>$('grassPatch').classList.remove('pulse'),800)};
-grassPatch.addEventListener('pointerdown',e=>{
- if(flight||pending||done||wiping)return;
- e.preventDefault();e.stopPropagation();
- grassGesture={x:e.clientX,y:e.clientY,id:e.pointerId};
- grassPatch.setPointerCapture?.(e.pointerId);
- grassPatch.classList.add('holding');kicker.rotation.x=.30;kArmR.rotation.x=-1.25;kicker.userData.premiumArms?.[1] && (kicker.userData.premiumArms[1].rotation.x=-1.1);
-});
-grassPatch.addEventListener('pointermove',e=>{if(!grassGesture)return;e.stopPropagation();e.preventDefault();});
-function releaseGrass(e){
- if(!grassGesture)return;e.stopPropagation();e.preventDefault();
- const travel=grassGesture.y-e.clientY;
- grassGesture=null;grassPatch.classList.remove('holding');
- if(travel>22){tossGrass();}else {$('conditionTip').hidden=false;$('conditionTip').textContent='SWIPE UP FROM THE GRASS TO WATCH THE PLAYER TOSS IT';kicker.rotation.x=0;}
-}
-grassPatch.addEventListener('pointerup',releaseGrass);
-grassPatch.addEventListener('pointercancel',()=>{grassGesture=null;grassPatch.classList.remove('holding');kicker.rotation.x=0});
-grassPatch.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tossGrass()}});
-
-const wetCanvas=$('wetFooty'),wetCtx=wetCanvas.getContext('2d');
-let wipeLast=null,wipeDistance=0,wipeStrokes=0,wipeActive=false,wipePointer=null;
-function paintWetBall(){
- const c=wetCtx,w=c.canvas.width,h=c.canvas.height;wetCtx.clearRect(0,0,w,h);
- wetCtx.save();wetCtx.translate(w/2,h/2);wetCtx.rotate(-.12);
- let grd=wetCtx.createLinearGradient(-130,-65,160,80);grd.addColorStop(0,'#d47b53');grd.addColorStop(.48,'#a53a28');grd.addColorStop(1,'#5a221c');
- wetCtx.beginPath();wetCtx.ellipse(0,0,153,70,0,0,Math.PI*2);wetCtx.fillStyle=grd;wetCtx.fill();wetCtx.strokeStyle='#e7aa84';wetCtx.lineWidth=3;wetCtx.stroke();
- for(const x of [-110,110]){wetCtx.beginPath();wetCtx.moveTo(x,-36);wetCtx.quadraticCurveTo(x*.64,0,x,36);wetCtx.strokeStyle='#efc4a0';wetCtx.lineWidth=2;wetCtx.stroke()}
- wetCtx.strokeStyle='#f2dcc6';wetCtx.lineWidth=5;wetCtx.beginPath();wetCtx.moveTo(-43,0);wetCtx.lineTo(43,0);wetCtx.stroke();
- for(let x=-30;x<=30;x+=12){wetCtx.beginPath();wetCtx.moveTo(x,-9);wetCtx.lineTo(x,9);wetCtx.stroke()}
- const count=Math.round(85*(1-wipeQuality));
- for(let j=0;j<count;j++){let px=Math.sin(j*91.3)*137,py=Math.sin(j*31.72)*63;if((px/153)**2+(py/70)**2>.91)continue;wetCtx.beginPath();wetCtx.ellipse(px,py,1.8+(j%4)*.55,3+(j%3),-.3,0,Math.PI*2);wetCtx.fillStyle='rgba(183,228,253,.83)';wetCtx.fill()}
- wetCtx.restore();
-}
-function startWipe(){
- if(weather!=='rain'||flight||pending||wiping||done)return;
- initAudio();wiping=true;wipeQuality=0;wipeDistance=0;wipeStrokes=0;wipeActive=false;wipePointer=null;
- wipeEnds=performance.now()+2000;$('wipePanel').hidden=false;
- $('wipeCount').textContent='2.0';$('wipeMeter').textContent='Rub across the football quickly · 2 seconds';paintWetBall();
-}
-$('wipeButton').onclick=startWipe;
-function finishWipe(){
- if(!wiping)return;
- wiping=false;$('wipePanel').hidden=true;wipeActive=false;wipePointer=null;
- if(training.active&&wipeQuality>=.25)trainingAdvance(2);
- else if(training.active){$('trainingPrompt').textContent='Try again! Swipe rapidly across the ball to remove the water.';}
- slipRisk=.13*(1-wipeQuality*.82);
- $('conditionTip').hidden=false;
- $('conditionTip').textContent=`BALL ${Math.round(wipeQuality*100)}% DRY · ${wipeQuality>.8?'GOOD GRIP':'WET BALL STILL SLIPPERY'}`;
- $('wipeButton').textContent='💧 Wipe again';
-}
-// Use actual canvas-space bounds. Count deliberate movements on the ball, not taps on the overlay.
-function wipeCoord(e){let r=wetCanvas.getBoundingClientRect();return {x:(e.clientX-r.left)*wetCanvas.width/r.width,y:(e.clientY-r.top)*wetCanvas.height/r.height}}
-function wipeInside(p){let dx=p.x-wetCanvas.width/2,dy=p.y-wetCanvas.height/2;return (dx/161)**2+(dy/80)**2<=1.12}
-wetCanvas.addEventListener('pointerdown',e=>{
- if(!wiping)return;e.preventDefault();e.stopPropagation();
- wipePointer=e.pointerId;wipeActive=true;wipeLast=wipeCoord(e);
- wetCanvas.setPointerCapture(e.pointerId);
-});
-wetCanvas.addEventListener('pointermove',e=>{
- if(!wiping||!wipeActive||e.pointerId!==wipePointer)return;
- e.preventDefault();e.stopPropagation();let next=wipeCoord(e);
- let dist=Math.hypot(next.x-wipeLast.x,next.y-wipeLast.y);
- if(wipeInside(next)||wipeInside(wipeLast)){
-   wipeDistance+=Math.min(dist,55);
-   wipeQuality=Math.min(1,wipeDistance/950+wipeStrokes*.055);
-   $('wipeMeter').textContent=`${Math.round(wipeQuality*100)}% DRY · KEEP WIPING`;
-   paintWetBall();
- }
- wipeLast=next;
-});
-function releaseWipe(e){if(!wiping)return;e.stopPropagation();e.preventDefault();if(wipeActive){wipeStrokes++;wipeQuality=Math.min(1,wipeDistance/950+wipeStrokes*.055);paintWetBall()}wipeActive=false;wipePointer=null;wipeLast=null}
-wetCanvas.addEventListener('pointerup',releaseWipe);
-wetCanvas.addEventListener('pointercancel',releaseWipe);
-$('wipePanel').addEventListener('pointerdown',e=>e.stopPropagation());
-$('wipePanel').addEventListener('pointermove',e=>e.stopPropagation());
-$('wipePanel').addEventListener('pointerup',e=>e.stopPropagation());
-$('wipePanel').addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
-$('sunSpot').onpointerdown=e=>{shadeSun=true;$('sunSpot').classList.add('shaded');$('conditionTip').textContent='GLARE SHADED · LINE UP YOUR GOAL';e.stopPropagation()};
-for(let evt of ['pointerup','pointercancel','pointerleave'])$('sunSpot').addEventListener(evt,()=>{shadeSun=false;$('sunSpot').classList.remove('shaded')});
-for(let choice of ['venueSelect','weatherSelect'])$(choice).addEventListener('change',()=>{if(!flight&&!seasonActive)setup()});
-function weatherFrame(now,dt){
- if(grassEmitAt&&now>=grassEmitAt){grassEmitAt=0;grassFromHand();}
- if(grassPoseUntil&&now<grassPoseUntil){kicker.rotation.x=T.MathUtils.lerp(kicker.rotation.x,grassEmitAt?.34:-.10,Math.min(1,dt*7));kArmR.rotation.x=T.MathUtils.lerp(kArmR.rotation.x,grassEmitAt?-1.3:-.9,Math.min(1,dt*8));}
- else if(grassPoseUntil){grassPoseUntil=0;kicker.rotation.x=0;kArmR.rotation.x=0;kicker.userData.premiumArms?.[1] && (kicker.userData.premiumArms[1].rotation.x=0);}
- if(wiping){$('wipeCount').textContent=(Math.max(0,(wipeEnds-now)/1000)).toFixed(1);if(now>=wipeEnds)finishWipe()}
- let w=stage.clientWidth,h=stage.clientHeight;
- if(grassCanvas.width!==Math.round(w)||grassCanvas.height!==Math.round(h)){grassCanvas.width=w;grassCanvas.height=h}
- gx.clearRect(0,0,w,h);
- grassFlight=grassFlight.filter(p=>p.age<p.lifetime);
- for(let p of grassFlight){p.age+=dt;p.vy+=72*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;gx.save();gx.translate(p.x,p.y);gx.rotate(.4+p.age*8);gx.globalAlpha=Math.max(0,1-p.age/p.lifetime);gx.fillStyle=p.age<1?'#b2dc73':'#d7d5a1';gx.fillRect(-p.size/2,0,p.size,1.3);gx.restore()}
-}
-
-const originalFinish=finish;
-finish=function(p){
-originalFinish(p);
-if(!practice&&i===gameLength-1)updateBest()}
-;
-
-setup();if(!localStorage.getItem('ffTutorialSeen'))startTraining();
-
-
-</script><script>setTimeout(()=>{if(document.getElementById("result").textContent.includes("Loading"))document.getElementById("err").textContent="3D engine could not load. Check internet access and WebGL support."},8000)</script></body></html>
+</script></body></html>
